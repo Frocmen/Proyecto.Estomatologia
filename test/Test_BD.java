@@ -20,7 +20,8 @@ public class Test_BD {
         Test_BD t = new Test_BD();
       t.testConexion();
     }
-    
+    // TEST CONEXION. Verificar el funcionamiento correcto.
+    // EL ERROR NO SOY YO, SINO LA PC
     public void testConexion(){
         ConexionSingleton conn = new ConexionSingleton();
         try {
