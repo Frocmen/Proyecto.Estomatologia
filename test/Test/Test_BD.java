@@ -1,11 +1,11 @@
-
-import Util.ConexionSingleton;
-import java.sql.Connection;
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
+package Test;
+
+import Util.ConexionSingleton;
+import java.sql.Connection;
 
 /**
  *
@@ -20,8 +20,7 @@ public class Test_BD {
         Test_BD t = new Test_BD();
       t.testConexion();
     }
-    // TEST CONEXION. Verificar el funcionamiento correcto.
-    // EL ERROR NO SOY YO, SINO LA PC
+    
     public void testConexion(){
         ConexionSingleton conn = new ConexionSingleton();
         try {

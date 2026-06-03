@@ -4,36 +4,41 @@
  */
 package Util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
-/**
- *
- * @author Frocmen
- */
 public class ConexionSingleton {
-    
-    //creado una variable estatica 
+// CREADO UNA VARIABLE ESTÁTICA 
+
     public static Connection connection;
 
-    //metodo getConnection
+    // MÉTODO getConnection
     public static Connection getConnection() {
         try {
-            if (connection == null) {
+            if (connection == null || connection.isClosed()) {
+
                 Runtime.getRuntime().addShutdownHook(new getClose());
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://localhost/bd_sisdoc", "root", "admin");
-                System.out.println(" ENTRO A LA BASE DE DATOS ");
+
+                // Driver Oracle JDBC
+                Class.forName("oracle.jdbc.OracleDriver");
+
+                // Conexion Oracle XE
+                connection = DriverManager.getConnection(
+                        "jdbc:oracle:thin:@localhost:1521/XE",
+                        "BDPI",
+                        "123"
+                );
+
+                System.out.println("Conectado a Oracle XE");
             }
             return connection;
 
         } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException("Conexion fallida", e);
+            throw new RuntimeException("CONEXIÓN FALLIDA: ", e);
 
         }
     }
 
+    // HERENCIA DE SESIÓN TERMINADA DE UNA CLASE
     static class getClose extends Thread {
 
         @Override
@@ -49,4 +54,3 @@ public class ConexionSingleton {
 
     }
 }
-
