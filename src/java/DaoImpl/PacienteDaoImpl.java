@@ -20,36 +20,41 @@ public class PacienteDaoImpl implements IPaciente {
     // falta arregar este pedooooooooooooooo
     @Override
     public int registrarPaciente(Paciente paciente) {
-        String sql = "INSERT INTO persona(nombre, apellido, dni, telefono, email, direccion) "
-                + "VALUES(?,?,?,?,?,?)";
+        // ORACLE: INSERT con SEQUENCE + RETURNING INTO para recuperar el ID
+        String sql = "INSERT INTO PACIENTES(ID, NOMBRE, APELLIDO, DNI, TELEFONO, EMAIL, "
+                   + "VERIFICADO, FECHA_REGISTRO, ACTIVO) "
+                   + "VALUES(SEQ_PACIENTES.NEXTVAL, ?, ?, ?, ?, ?, 'N', SYSDATE, 'S')";
 
-        try (Connection cn = ConexionSingleton.getConnection(); PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String[] cols = {"ID"}; // ← ORACLE: columna a recuperar
+
+        try (Connection cn = ConexionSingleton.getConnection();
+             PreparedStatement ps = cn.prepareStatement(sql, cols)) {
 
             ps.setString(1, paciente.getNombre());
             ps.setString(2, paciente.getApellido());
             ps.setString(3, paciente.getDni());
             ps.setString(4, paciente.getTelefono());
             ps.setString(5, paciente.getEmail());
-            ps.setString(6, paciente.getDireccion());
 
-            int affectedRows = ps.executeUpdate();
+            int affected = ps.executeUpdate();
 
-            if (affectedRows > 0) {
+            if (affected > 0) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     int idGenerado = rs.getInt(1);
-                    // Guardar datos adicionales del paciente
-                    guardarDatosPaciente(idGenerado, paciente.getFechaNacimiento());
+                    paciente.setId(idGenerado);
+                    System.out.println("Paciente registrado con ID: " + idGenerado);
                     return idGenerado;
                 }
             }
+
         } catch (Exception e) {
             System.out.println("ERROR al registrar paciente: " + e.getMessage());
             e.printStackTrace();
         }
         return 0;
     }
-
+//falta consultar
     private void guardarDatosPaciente(int idPersona, String fechaNacimiento) {
         String sql = "INSERT INTO paciente(id_persona, fecha_nacimiento) VALUES(?,?)";
         try (Connection cn = ConexionSingleton.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -64,27 +69,27 @@ public class PacienteDaoImpl implements IPaciente {
 
     @Override
     public List<Paciente> listarPacientes() {
-List<Paciente> lista = new ArrayList<>();
-        String sql = "SELECT p.*, pa.fecha_nacimiento FROM persona p "
-                   + "INNER JOIN paciente pa ON p.id_persona = pa.id_persona";
-        
+ List<Paciente> lista = new ArrayList<>();
+        String sql = "SELECT ID, NOMBRE, APELLIDO, DNI, TELEFONO, EMAIL, "
+                   + "VERIFICADO, ACTIVO FROM PACIENTES WHERE ACTIVO = 'S'";
+
         try (Connection cn = ConexionSingleton.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
+
             while (rs.next()) {
                 Paciente p = new Paciente();
-                p.setId_persona(rs.getInt("id_persona"));
-                p.setNombre(rs.getString("nombre"));
-                p.setApellido(rs.getString("apellido"));
-                p.setDni(rs.getString("dni"));
-                p.setTelefono(rs.getString("telefono"));
-                p.setEmail(rs.getString("email"));
-                p.setDireccion(rs.getString("direccion"));
-                p.setFechaNacimiento(rs.getString("fecha_nacimiento"));
-                
+                p.setId(rs.getInt("ID"));
+                p.setNombre(rs.getString("NOMBRE"));
+                p.setApellido(rs.getString("APELLIDO"));
+                p.setDni(rs.getString("DNI"));
+                p.setTelefono(rs.getString("TELEFONO"));
+                p.setEmail(rs.getString("EMAIL"));
+                p.setVerificado("S".equals(rs.getString("VERIFICADO")));
+                p.setActivo("S".equals(rs.getString("ACTIVO")));
                 lista.add(p);
             }
+
         } catch (Exception e) {
             System.out.println("ERROR al listar pacientes: " + e.getMessage());
             e.printStackTrace();
@@ -94,21 +99,21 @@ List<Paciente> lista = new ArrayList<>();
 
     @Override
     public boolean editar(Paciente paciente) {
-       String sql = "UPDATE persona SET nombre=?, apellido=?, dni=?, telefono=?, email=?, direccion=? "
-                   + "WHERE id_persona=?";
-        
+       String sql = "UPDATE PACIENTES SET NOMBRE=?, APELLIDO=?, DNI=?, "
+                   + "TELEFONO=?, EMAIL=? WHERE ID=?";
+
         try (Connection cn = ConexionSingleton.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
-            
+
             ps.setString(1, paciente.getNombre());
             ps.setString(2, paciente.getApellido());
             ps.setString(3, paciente.getDni());
             ps.setString(4, paciente.getTelefono());
             ps.setString(5, paciente.getEmail());
-            ps.setString(6, paciente.getDireccion());
-            ps.setInt(7, paciente.getId_persona());
-            
+            ps.setInt(6, paciente.getId());
+
             return ps.executeUpdate() > 0;
+
         } catch (Exception e) {
             System.out.println("ERROR al editar paciente: " + e.getMessage());
             e.printStackTrace();
@@ -118,15 +123,17 @@ List<Paciente> lista = new ArrayList<>();
 
     @Override
     public boolean delete(int id) {
-       String sql = "DELETE FROM persona WHERE id_persona = ?";
-        
+      // ORACLE: Baja lógica — nunca eliminar físicamente
+        String sql = "UPDATE PACIENTES SET ACTIVO = 'N' WHERE ID = ?";
+
         try (Connection cn = ConexionSingleton.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
-            
+
             ps.setInt(1, id);
             return ps.executeUpdate() > 0;
+
         } catch (Exception e) {
-            System.out.println("ERROR al eliminar paciente: " + e.getMessage());
+            System.out.println("ERROR al desactivar paciente: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -134,28 +141,28 @@ List<Paciente> lista = new ArrayList<>();
 
     @Override
     public Paciente buscarPacientePorDni(String dni) {
-      String sql = "SELECT p.*, pa.fecha_nacimiento FROM persona p "
-                   + "INNER JOIN paciente pa ON p.id_persona = pa.id_persona "
-                   + "WHERE p.dni = ?";
-        
+       String sql = "SELECT ID, NOMBRE, APELLIDO, DNI, TELEFONO, EMAIL, "
+                   + "VERIFICADO, ACTIVO FROM PACIENTES WHERE DNI = ?";
+
         try (Connection cn = ConexionSingleton.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
-            
+
             ps.setString(1, dni);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 Paciente p = new Paciente();
-                p.setId_persona(rs.getInt("id_persona"));
-                p.setNombre(rs.getString("nombre"));
-                p.setApellido(rs.getString("apellido"));
-                p.setDni(rs.getString("dni"));
-                p.setTelefono(rs.getString("telefono"));
-                p.setEmail(rs.getString("email"));
-                p.setDireccion(rs.getString("direccion"));
-                p.setFechaNacimiento(rs.getString("fecha_nacimiento"));
+                p.setId(rs.getInt("ID"));
+                p.setNombre(rs.getString("NOMBRE"));
+                p.setApellido(rs.getString("APELLIDO"));
+                p.setDni(rs.getString("DNI"));
+                p.setTelefono(rs.getString("TELEFONO"));
+                p.setEmail(rs.getString("EMAIL"));
+                p.setVerificado("S".equals(rs.getString("VERIFICADO")));
+                p.setActivo("S".equals(rs.getString("ACTIVO")));
                 return p;
             }
+
         } catch (Exception e) {
             System.out.println("ERROR al buscar paciente por DNI: " + e.getMessage());
             e.printStackTrace();
@@ -165,34 +172,33 @@ List<Paciente> lista = new ArrayList<>();
 
     @Override
     public Paciente buscarPorId(int id) {
-        String sql = "SELECT p.*, pa.fecha_nacimiento FROM persona p "
-                   + "INNER JOIN paciente pa ON p.id_persona = pa.id_persona "
-                   + "WHERE p.id_persona = ?";
-        
+        String sql = "SELECT ID, NOMBRE, APELLIDO, DNI, TELEFONO, EMAIL, "
+                   + "VERIFICADO, ACTIVO FROM PACIENTES WHERE ID = ?";
+
         try (Connection cn = ConexionSingleton.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
-            
+
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 Paciente p = new Paciente();
-                p.setId_persona(rs.getInt("id_persona"));
-                p.setNombre(rs.getString("nombre"));
-                p.setApellido(rs.getString("apellido"));
-                p.setDni(rs.getString("dni"));
-                p.setTelefono(rs.getString("telefono"));
-                p.setEmail(rs.getString("email"));
-                p.setDireccion(rs.getString("direccion"));
-                p.setFechaNacimiento(rs.getString("fecha_nacimiento"));
+                p.setId(rs.getInt("ID"));
+                p.setNombre(rs.getString("NOMBRE"));
+                p.setApellido(rs.getString("APELLIDO"));
+                p.setDni(rs.getString("DNI"));
+                p.setTelefono(rs.getString("TELEFONO"));
+                p.setEmail(rs.getString("EMAIL"));
+                p.setVerificado("S".equals(rs.getString("VERIFICADO")));
+                p.setActivo("S".equals(rs.getString("ACTIVO")));
                 return p;
             }
+
         } catch (Exception e) {
             System.out.println("ERROR al buscar paciente por ID: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
-    
     }
 
 }

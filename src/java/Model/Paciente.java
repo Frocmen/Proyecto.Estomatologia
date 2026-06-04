@@ -12,21 +12,20 @@ import java.time.LocalDateTime;
  */
 public class Paciente{
     
-    private int id;                    // ← Era id_persona
+    private int id;
     private String nombre;
     private String apellido;
     private String dni;
     private String email;
-    private String passwordHash;       // ← NUEVO (era clave en Usuario)
-    private String googleId;           // ← NUEVO (para OAuth)
+    private String passwordHash;
+    private String googleId;
     private String telefono;
-    private boolean verificado;        // ← NUEVO
-    private String tokenVerificacion;  // ← NUEVO
-    private LocalDateTime fechaRegistro; // ← NUEVO
-    private boolean activo; 
+    private boolean verificado;
+    private String tokenVerificacion;
+    private LocalDateTime fechaRegistro;
+    private boolean activo;
 
-    public Paciente() {
-    }
+    public Paciente() {}
 
     public Paciente(String nombre, String apellido, String dni, String telefono) {
         this.nombre = nombre;
@@ -38,7 +37,10 @@ public class Paciente{
         this.fechaRegistro = LocalDateTime.now();
     }
 
-    // Getters y Setters
+    // ← AGREGADO: alias getId_persona() para compatibilidad con DAOs
+    public int getId_persona() { return id; }
+    public void setId_persona(int id) { this.id = id; }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -61,29 +63,22 @@ public class Paciente{
     public void setGoogleId(String googleId) { this.googleId = googleId; }
 
     public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { 
-        // RN-D06: Validar 9 dígitos
-        if (telefono != null && !telefono.matches("^[0-9]{9}$")) {
-            throw new IllegalArgumentException("Teléfono debe tener 9 dígitos numéricos");
-        }
-        this.telefono = telefono; 
-    }
+    // ← SIN VALIDACIÓN AQUÍ — se valida en el Controller
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
     public boolean isVerificado() { return verificado; }
     public void setVerificado(boolean verificado) { this.verificado = verificado; }
 
     public String getTokenVerificacion() { return tokenVerificacion; }
-    public void setTokenVerificacion(String tokenVerificacion) { this.tokenVerificacion = tokenVerificacion; }
+    public void setTokenVerificacion(String t) { this.tokenVerificacion = t; }
 
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+    public void setFechaRegistro(LocalDateTime f) { this.fechaRegistro = f; }
 
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
-    public String getNombreCompleto() {
-        return nombre + " " + apellido;
-    }
+    public String getNombreCompleto() { return nombre + " " + apellido; }
 
     @Override
     public String toString() {

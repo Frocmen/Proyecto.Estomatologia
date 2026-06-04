@@ -12,24 +12,22 @@ import java.util.List;
  */
 public class Profesional extends Persona{
    
-    private int id;                    // ← Era id_persona
+    private int id;
     private String nombre;
     private String apellido;
     private String email;
-    private String passwordHash;       // ← NUEVO
+    private String passwordHash;
     private String telefono;
-    private boolean activo;            // ← NUEVO
-    // ← ELIMINADO: especialidad (String) → ahora es relación N:M
-    // ← ELIMINADO: colegiatura (no existe en Oracle)
-    // ← ELIMINADO: extends Persona
-    
-    // Relaciones cargadas por JOIN
+    private boolean activo;
     private List<Especialidad> especialidades;
     private Integer especialidadPrincipalId;
 
     public Profesional() {}
 
-    // Getters y Setters
+    // ← AGREGADO: alias getId_persona() para compatibilidad con DAOs y Controllers
+    public int getId_persona() { return id; }
+    public void setId_persona(int id) { this.id = id; }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -43,7 +41,7 @@ public class Profesional extends Persona{
     public void setEmail(String email) { this.email = email; }
 
     public String getPasswordHash() { return passwordHash; }
-    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    public void setPasswordHash(String p) { this.passwordHash = p; }
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
@@ -52,14 +50,12 @@ public class Profesional extends Persona{
     public void setActivo(boolean activo) { this.activo = activo; }
 
     public List<Especialidad> getEspecialidades() { return especialidades; }
-    public void setEspecialidades(List<Especialidad> especialidades) { this.especialidades = especialidades; }
+    public void setEspecialidades(List<Especialidad> e) { this.especialidades = e; }
 
     public Integer getEspecialidadPrincipalId() { return especialidadPrincipalId; }
-    public void setEspecialidadPrincipalId(Integer especialidadPrincipalId) { this.especialidadPrincipalId = especialidadPrincipalId; }
+    public void setEspecialidadPrincipalId(Integer id) { this.especialidadPrincipalId = id; }
 
-    public String getNombreCompleto() {
-        return nombre + " " + apellido;
-    }
+    public String getNombreCompleto() { return nombre + " " + apellido; }
 
     @Override
     public String toString() {

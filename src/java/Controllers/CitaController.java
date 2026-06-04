@@ -28,62 +28,155 @@ import java.time.format.DateTimeFormatter;
 @WebServlet(name = "CitaController", urlPatterns = {"/CitaController"})
 public class CitaController extends HttpServlet {
     
-private final ICita citaDao = new CitaDaoImpl();
+    private final ICita citaDao = new CitaDaoImpl();
     private final Gson gson = new Gson();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       response.setContentType("application/json");
+     response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action");
         JsonObject jsonResponse = new JsonObject();
 
+        // Protección contra action == null
+        if (action == null) {
+            action = "listar";
+        }
+
         try (PrintWriter out = response.getWriter()) {
 
-            if ("registrar".equals(action)) {
-                // Aquí se recibirían los IDs y la fecha
-                int idPaciente = Integer.parseInt(request.getParameter("idPaciente"));
-                int idProfesional = Integer.parseInt(request.getParameter("idProfesional"));
-                String fechaStr = request.getParameter("fechaHora");
+            switch (action) {
 
-                // Convertir String a LocalDateTime (ajusta según formato)
-                LocalDateTime fechaHora = LocalDateTime.parse(fechaStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                // ── REGISTRAR CITA ──────────────────────────────────────
+                case "registrar":
+                    int idPaciente = Integer.parseInt(request.getParameter("idPaciente"));
+                    int idProfesional = Integer.parseInt(request.getParameter("idProfesional"));
+                    String fechaStr = request.getParameter("fechaHora");
 
-                // Crear objetos temporales (en práctica se buscarían por ID)
-                Paciente paciente = new Paciente();
-                paciente.setId_persona(idPaciente);
-                
-                Profesional profesional = new Profesional();
-                profesional.setId_persona(idProfesional);
+                    LocalDateTime fechaHora = LocalDateTime.parse(
+                            fechaStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
-                Cita cita = new Cita();
-                cita.setPaciente(paciente);
-                cita.setProfesional(profesional);
-                cita.setFechaHora(fechaHora);
-                cita.setEstado("CONFIRMADA");
+                    Paciente paciente = new Paciente();
+                    paciente.setId(idPaciente);
 
-                int idCita = citaDao.registrar(cita);
+                    Profesional profesional = new Profesional();
+                    profesional.setId(idProfesional);
 
-                jsonResponse.addProperty("success", idCita > 0);
-                jsonResponse.addProperty("message", idCita > 0 ? "Cita registrada correctamente" : "Error al registrar cita");
-                jsonResponse.addProperty("idCita", idCita);
+                    Cita cita = new Cita();
+                    cita.setPaciente(paciente);
+                    cita.setProfesional(profesional);
+                    cita.setFechaHora(fechaHora);
+                    cita.setEstado("CONFIRMADA");
 
-            } else if ("cancelar".equals(action)) {
-                int idCita = Integer.parseInt(request.getParameter("idCita"));
-                boolean resultado = citaDao.cancelar(idCita);
+                    // Recibir motivo si viene del formulario
+                    String motivo = request.getParameter("motivo");
+                    if (motivo != null) {
+                        cita.setMotivo(motivo);
+                    }
 
-                jsonResponse.addProperty("success", resultado);
-                jsonResponse.addProperty("message", resultado ? "Cita cancelada" : "No se pudo cancelar la cita");
+                    int idCitaCreada = citaDao.registrar(cita);
+                    jsonResponse.addProperty("success", idCitaCreada > 0);
+                    jsonResponse.addProperty("message", idCitaCreada > 0
+                            ? "Cita registrada correctamente"
+                            : "Error al registrar la cita");
+                    jsonResponse.addProperty("idCita", idCitaCreada);
+                    break;
 
-            } else if ("listarPorPaciente".equals(action)) {
-                int idPaciente = Integer.parseInt(request.getParameter("idPaciente"));
-                jsonResponse.add("data", gson.toJsonTree(citaDao.listarPorPaciente(idPaciente)));
-                jsonResponse.addProperty("success", true);
+                // ── CANCELAR CITA — RN-05 APLICADA ─────────────────────
+                case "cancelar":
+                    int idCancelar = Integer.parseInt(request.getParameter("idCita"));
 
-            } else {
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Acción no válida");
+                    // ✅ RN-05: Verificar si faltan más de 8 horas para la cita
+                    // puedeModificarOCancelar() consulta la BD y aplica la regla
+                    if (!citaDao.puedeModificarOCancelar(idCancelar)) {
+                        jsonResponse.addProperty("success", false);
+                        jsonResponse.addProperty("message",
+                                "No es posible cancelar tu cita con menos de 8 horas "
+                                + "de anticipación. Por favor, comunícate directamente "
+                                + "con la recepción de Dental Health.");
+                        break; // Salir sin cancelar
+                    }
+
+                    // Si pasó la validación, proceder con la cancelación
+                    boolean cancelado = citaDao.cancelar(idCancelar);
+                    jsonResponse.addProperty("success", cancelado);
+                    jsonResponse.addProperty("message", cancelado
+                            ? "Cita cancelada correctamente"
+                            : "No se pudo cancelar la cita. Verifique el estado actual.");
+                    break;
+
+                // ── REPROGRAMAR CITA — RN-05 APLICADA ──────────────────
+                case "reprogramar":
+                    int idReprogramar = Integer.parseInt(request.getParameter("idCita"));
+                    String nuevaFechaStr = request.getParameter("nuevaFecha");
+
+                    // ✅ RN-05: Misma validación para modificación
+                    if (!citaDao.puedeModificarOCancelar(idReprogramar)) {
+                        jsonResponse.addProperty("success", false);
+                        jsonResponse.addProperty("message",
+                                "No es posible modificar tu cita con menos de 8 horas "
+                                + "de anticipación. Por favor, comunícate directamente "
+                                + "con la recepción de Dental Health.");
+                        break;
+                    }
+
+                    LocalDateTime nuevaFecha = LocalDateTime.parse(
+                            nuevaFechaStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+                    boolean reprogramado = citaDao.reprogramar(idReprogramar, nuevaFecha);
+                    jsonResponse.addProperty("success", reprogramado);
+                    jsonResponse.addProperty("message", reprogramado
+                            ? "Cita reprogramada correctamente"
+                            : "No se pudo reprogramar la cita.");
+                    break;
+
+                // ── MARCAR COMO ATENDIDA ────────────────────────────────
+                case "atender":
+                    int idAtender = Integer.parseInt(request.getParameter("idCita"));
+                    boolean atendida = citaDao.marcarComoAtendida(idAtender);
+                    jsonResponse.addProperty("success", atendida);
+                    jsonResponse.addProperty("message", atendida
+                            ? "Cita marcada como atendida"
+                            : "No se pudo actualizar el estado de la cita.");
+                    break;
+
+                // ── LISTAR POR PACIENTE ─────────────────────────────────
+                case "listarPorPaciente":
+                    int idPac = Integer.parseInt(request.getParameter("idPaciente"));
+                    jsonResponse.add("data", gson.toJsonTree(citaDao.listarPorPaciente(idPac)));
+                    jsonResponse.addProperty("success", true);
+                    break;
+
+                // ── LISTAR POR PROFESIONAL ──────────────────────────────
+                case "listarPorProfesional":
+                    int idProf = Integer.parseInt(request.getParameter("idProfesional"));
+                    jsonResponse.add("data", gson.toJsonTree(citaDao.listarPorProfesional(idProf)));
+                    jsonResponse.addProperty("success", true);
+                    break;
+
+                // ── LISTAR TODAS ────────────────────────────────────────
+                case "listarTodas":
+                    jsonResponse.add("data", gson.toJsonTree(citaDao.listarTodas()));
+                    jsonResponse.addProperty("success", true);
+                    break;
+
+                // ── CONSULTAR DISPONIBILIDAD — RF-02 ───────────────────
+                case "disponibilidad":
+                    String especialidad = request.getParameter("especialidad");
+                    String fechaDisponibilidad = request.getParameter("fecha");
+
+                    LocalDateTime fechaBusqueda = LocalDateTime.parse(
+                            fechaDisponibilidad, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+                    jsonResponse.add("data", gson.toJsonTree(
+                            citaDao.consultarDisponibilidad(especialidad, fechaBusqueda)));
+                    jsonResponse.addProperty("success", true);
+                    break;
+
+                default:
+                    jsonResponse.addProperty("success", false);
+                    jsonResponse.addProperty("message", "Acción no válida");
             }
 
             out.print(jsonResponse.toString());

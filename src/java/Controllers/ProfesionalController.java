@@ -45,12 +45,9 @@ public class ProfesionalController extends HttpServlet {
                 Profesional p = new Profesional();
                 p.setNombre(request.getParameter("nombre"));
                 p.setApellido(request.getParameter("apellido"));
-                p.setDni(request.getParameter("dni"));
                 p.setTelefono(request.getParameter("telefono"));
-                p.setEmail(request.getParameter("email"));
-                p.setDireccion(request.getParameter("direccion"));
-                p.setEspecialidad(request.getParameter("especialidad"));
-                p.setColegiatura(request.getParameter("colegiatura"));
+                p.setEmail(request.getParameter("email"));         
+               
 
                 int id = profesionalDao.registrarProfesional(p);
                 jsonResponse.addProperty("success", id > 0);
