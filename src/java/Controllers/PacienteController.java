@@ -50,8 +50,6 @@ public class PacienteController extends HttpServlet {
                     p.setDni(request.getParameter("dni"));
                     p.setTelefono(request.getParameter("telefono"));
                     p.setEmail(request.getParameter("email"));
-                    p.setDireccion(request.getParameter("direccion"));
-                    p.setFechaNacimiento(request.getParameter("fechaNacimiento"));
 
                     int id = pacienteDao.registrarPaciente(p);
                     jsonResponse.addProperty("success", id > 0);

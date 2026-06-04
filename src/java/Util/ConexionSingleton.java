@@ -7,50 +7,54 @@ package Util;
 import java.sql.*;
 
 public class ConexionSingleton {
-// CREADO UNA VARIABLE ESTÁTICA 
-
+ // VARIABLE ESTÁTICA DE CONEXIÓN
     public static Connection connection;
-
+ 
+    // BANDERA: evita registrar el ShutdownHook más de una vez
+    private static boolean hookRegistered = false;
+ 
     // MÉTODO getConnection
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
-
-                Runtime.getRuntime().addShutdownHook(new getClose());
-
+ 
                 // Driver Oracle JDBC
                 Class.forName("oracle.jdbc.OracleDriver");
-
-                // Conexion Oracle XE
+ 
+                // Conexión Oracle XE
                 connection = DriverManager.getConnection(
                         "jdbc:oracle:thin:@localhost:1521/XE",
                         "BDPI",
                         "123"
                 );
-
                 System.out.println("Conectado a Oracle XE");
+ 
+                // ✅ Registrar el ShutdownHook UNA SOLA VEZ
+                if (!hookRegistered) {
+                    hookRegistered = true;
+                    Runtime.getRuntime().addShutdownHook(new getClose());
+                }
             }
             return connection;
-
+ 
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException("CONEXIÓN FALLIDA: ", e);
-
         }
     }
-
-    // HERENCIA DE SESIÓN TERMINADA DE UNA CLASE
+ 
+    // CIERRE DE CONEXIÓN AL TERMINAR LA JVM
     static class getClose extends Thread {
-
         @Override
         public void run() {
             try {
-                Connection conn = ConexionSingleton.getConnection();
-                conn.close();
+                // ✅ Cerrar directamente la variable, sin llamar getConnection()
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                    System.out.println("Conexión cerrada correctamente.");
+                }
             } catch (Exception ex) {
-                throw new RuntimeException(ex);
+                System.out.println("Error al cerrar conexión: " + ex.getMessage());
             }
-
         }
-
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class PacienteDaoImpl implements IPaciente {
 
-    // falta arregar este pedooooooooooooooo
+  
     @Override
     public int registrarPaciente(Paciente paciente) {
         // ORACLE: INSERT con SEQUENCE + RETURNING INTO para recuperar el ID
