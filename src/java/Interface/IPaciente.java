@@ -4,19 +4,18 @@
  */
 package Interface;
 
-import Model.Persona;
-import Model.Usuario;
+import Model.Paciente;
 import java.util.List;
 
 /**
  *
  * @author Frocmen
  */
-public interface IPersona {
-    int insert(Persona persona, Usuario usuario);
-    boolean update(Persona persona);
-    Persona buscarPorId(int id);
-    Persona buscarPorDni(String dni);
-    List<Persona> listar();
+public interface IPaciente {
+    int registrarPaciente(Paciente paciente);
+    List<Paciente> listarPacientes();
+    boolean editar(Paciente paciente);
     boolean delete(int id);
+    Paciente buscarPacientePorDni(String dni);
+    Paciente buscarPorId(int id);
 }

@@ -4,28 +4,65 @@
  */
 package Model;
 
+import java.util.List;
+
 /**
  *
  * @author Frocmen
  */
 public class Profesional extends Persona{
-    private String especialidad;
-    private String colegiatura;   // Número de registro profesional
+   
+    private int id;                    // ← Era id_persona
+    private String nombre;
+    private String apellido;
+    private String email;
+    private String passwordHash;       // ← NUEVO
+    private String telefono;
+    private boolean activo;            // ← NUEVO
+    // ← ELIMINADO: especialidad (String) → ahora es relación N:M
+    // ← ELIMINADO: colegiatura (no existe en Oracle)
+    // ← ELIMINADO: extends Persona
+    
+    // Relaciones cargadas por JOIN
+    private List<Especialidad> especialidades;
+    private Integer especialidadPrincipalId;
 
     public Profesional() {}
 
-    public Profesional(int id_persona, String nombre, String apellido, String dni, 
-                      String telefono, String email, String direccion, 
-                      String especialidad, String colegiatura) {
-        
-        super(id_persona, nombre, apellido, dni, telefono, email, direccion);
-        this.especialidad = especialidad;
-        this.colegiatura = colegiatura;
+    // Getters y Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
+
+    public List<Especialidad> getEspecialidades() { return especialidades; }
+    public void setEspecialidades(List<Especialidad> especialidades) { this.especialidades = especialidades; }
+
+    public Integer getEspecialidadPrincipalId() { return especialidadPrincipalId; }
+    public void setEspecialidadPrincipalId(Integer especialidadPrincipalId) { this.especialidadPrincipalId = especialidadPrincipalId; }
+
+    public String getNombreCompleto() {
+        return nombre + " " + apellido;
     }
 
-    public String getEspecialidad() { return especialidad; }
-    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
-    
-    public String getColegiatura() { return colegiatura; }
-    public void setColegiatura(String colegiatura) { this.colegiatura = colegiatura; }
+    @Override
+    public String toString() {
+        return String.format("Profesional[id=%d, %s]", id, getNombreCompleto());
+    }
 }
