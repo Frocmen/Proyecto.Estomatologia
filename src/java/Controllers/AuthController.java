@@ -4,10 +4,13 @@
  */
 package Controllers;
 
+import DaoImpl.PacienteDaoImpl;
 import DaoImpl.PersonaDaoImpl;
 import DaoImpl.UsuarioDaoImpl;
+import Interface.IPaciente;
 import Interface.IPersona;
 import Interface.IUsuario;
+import Model.Paciente;
 import Model.Persona;
 import Model.Usuario;
 import com.google.gson.Gson;
@@ -28,25 +31,17 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet(name = "AuthController", urlPatterns = {"/AuthController"})
 public class AuthController extends HttpServlet {
 
+    // LLAMADA GLOBAL — arquitectura del profesor
     private final IUsuario uDao = new UsuarioDaoImpl();
-    private final IPersona pDao = new PersonaDaoImpl();
+    private final IPaciente pDao = new PacienteDaoImpl();
     private final Gson gson = new Gson();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AuthController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AuthController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        
+       response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().print("{\"message\":\"AuthController activo\"}");
     }
 
     
@@ -60,11 +55,20 @@ public class AuthController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         String action = request.getParameter("action");
+         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String action = request.getParameter("action");
         JsonObject jsonResponse = new JsonObject();
+
+        // Protección contra action null
+        if (action == null) {
+            action = "";
+        }
 
         try (PrintWriter out = response.getWriter()) {
 
+            // ── VALIDAR LOGIN ──────────────────────────────────────────
             if ("validar".equals(action)) {
                 String usuario = request.getParameter("usuario");
                 String clave = request.getParameter("password");
@@ -72,6 +76,7 @@ public class AuthController extends HttpServlet {
                 Usuario us = uDao.validate(usuario, clave);
 
                 if (us != null && us.getUsuario() != null) {
+                    // ABRIENDO SESIÓN
                     HttpSession sesion = request.getSession(true);
                     sesion.setAttribute("usuario", us);
 
@@ -83,27 +88,35 @@ public class AuthController extends HttpServlet {
                     jsonResponse.addProperty("message", "Credenciales incorrectas");
                 }
 
+            // ── REGISTER — Registro de paciente nuevo ─────────────────
+            // Usa PacienteDaoImpl — tabla PACIENTES en Oracle
             } else if ("register".equals(action)) {
-                Persona p = new Persona();
-                Usuario us = new Usuario();
-
+                Paciente p = new Paciente();
                 p.setNombre(request.getParameter("nombre"));
-                p.setEmail(request.getParameter("email"));
-                p.setDireccion(request.getParameter("direccion"));
+                p.setApellido(request.getParameter("apellido"));
+                p.setDni(request.getParameter("dni"));
                 p.setTelefono(request.getParameter("telefono"));
-                us.setClave(request.getParameter("password"));
+                p.setEmail(request.getParameter("email"));
 
-                int resultado = pDao.insert(p, us);
+                // La contraseña se hashea en PacienteDaoImpl al guardar
+                // Si viene password del form, se guarda hasheada via UsuarioDaoImpl
+                // En este flujo básico el paciente queda VERIFICADO = 'N'
+                int resultado = pDao.registrarPaciente(p);
 
                 jsonResponse.addProperty("success", resultado > 0);
-                jsonResponse.addProperty("message", resultado > 0 ? "Registro exitoso" : "Error al registrar");
+                jsonResponse.addProperty("message", resultado > 0
+                        ? "Registro exitoso. Verifique su correo para activar su cuenta."
+                        : "Error al registrar. Verifique los datos ingresados.");
 
+            // ── SALIR — Cierre de sesión ───────────────────────────────
             } else if ("salir".equals(action)) {
                 HttpSession session = request.getSession(false);
-                if (session != null) session.invalidate();
-
+                if (session != null) {
+                    session.invalidate();
+                }
                 jsonResponse.addProperty("success", true);
                 jsonResponse.addProperty("message", "Sesión cerrada correctamente");
+
             } else {
                 jsonResponse.addProperty("success", false);
                 jsonResponse.addProperty("message", "Acción no válida");
@@ -112,6 +125,7 @@ public class AuthController extends HttpServlet {
             out.print(jsonResponse.toString());
 
         } catch (Exception e) {
+            // ERROR 500 — Falla en lógica del servidor
             response.setStatus(500);
             jsonResponse.addProperty("success", false);
             jsonResponse.addProperty("message", "Error: " + e.getMessage());

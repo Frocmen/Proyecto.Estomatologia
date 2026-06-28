@@ -17,17 +17,19 @@ public class Cita {
     private LocalDateTime fechaHora;
     private String estado;           // CONFIRMADA, ATENDIDA, CANCELADA, REPROGRAMADA, NO_SHOW
     private String motivo;
+    private int especialidadId;
     
     public Cita() {
     }
 
-    public Cita(int id_cita, Paciente paciente, Profesional profesional, LocalDateTime fechaHora, String estado, String motivo) {
+    public Cita(int id_cita, Paciente paciente, Profesional profesional, LocalDateTime fechaHora, String estado, String motivo, int especialidadId) {
         this.id_cita = id_cita;
         this.paciente = paciente;
         this.profesional = profesional;
         this.fechaHora = fechaHora;
         this.estado = estado;
         this.motivo = motivo;
+        this.especialidadId = especialidadId;
     }
 
     public int getId_cita() {
@@ -76,6 +78,12 @@ public class Cita {
 
     public void setMotivo(String motivo) {
         this.motivo = motivo;
+    }
+    public int getEspecialidadId() {
+        return especialidadId;
+    } 
+    public void setEspecialidadId(int especialidadId) { 
+    this.especialidadId = especialidadId;
     }
     
     // Regla de Negocio RN-05: Solo se puede cancelar con más de 8 horas

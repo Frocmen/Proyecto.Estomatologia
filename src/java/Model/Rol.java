@@ -9,8 +9,9 @@ package Model;
  * @author Frocmen
  */
 public enum Rol {
-    ADMIN,
+   ADMIN,
     RECEPCIONISTA,
     MEDICO,
-    PACIENTE
+    PACIENTE,
+    JEFE_ADMIN   // ← AGREGADO: existe en tabla ROLES de Oracle
 }

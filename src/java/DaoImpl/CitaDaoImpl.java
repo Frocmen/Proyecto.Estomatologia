@@ -20,118 +20,200 @@ import java.util.List;
  * @author Frocmen
  */
 public class CitaDaoImpl implements ICita{
-
+    
+      private Connection cn;
+ // ESPECIALIDAD_ID viene de cita.getEspecialidadId() — no del profesional
     @Override
     public int registrar(Cita cita) {
-       String sql = "INSERT INTO CITAS(ID, PACIENTE_ID, PROFESIONAL_ID, ESPECIALIDAD_ID, "
-                   + "FECHA_HORA_INICIO, FECHA_HORA_FIN, ESTADO, ORIGEN, FECHA_CREACION) "
-                   + "VALUES(SEQ_CITAS.NEXTVAL, ?, ?, ?, ?, ?, ?, 'PACIENTE', SYSDATE)";
+         PreparedStatement st;
+        ResultSet rs;
+        String query;
         String[] cols = {"ID"};
 
-        try (Connection cn = ConexionSingleton.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql, cols)) {
+        try {
+            cn = ConexionSingleton.getConnection();
 
-            ps.setInt(1, cita.getPaciente().getId());
-            ps.setInt(2, cita.getProfesional().getId());
-            // Si especialidadPrincipalId es null, usar null en BD
-            if (cita.getProfesional().getEspecialidadPrincipalId() != null) {
-                ps.setInt(3, cita.getProfesional().getEspecialidadPrincipalId());
+            query = " INSERT INTO CITAS(ID, PACIENTE_ID, PROFESIONAL_ID, ESPECIALIDAD_ID, "
+                  + " FECHA_HORA_INICIO, FECHA_HORA_FIN, ESTADO, ORIGEN, FECHA_CREACION) "
+                  + " VALUES(SEQ_CITAS.NEXTVAL, ?, ?, ?, ?, ?, ?, 'PACIENTE', SYSDATE) ";
+
+            st = cn.prepareStatement(query, cols);
+            st.setInt(1, cita.getPaciente().getId());
+            st.setInt(2, cita.getProfesional().getId());
+
+            // ← CORRECCIÓN: ESPECIALIDAD_ID desde cita.getEspecialidadId()
+            if (cita.getEspecialidadId() > 0) {
+                st.setInt(3, cita.getEspecialidadId());
             } else {
-                ps.setNull(3, Types.INTEGER);
+                st.setNull(3, Types.INTEGER);
             }
-            ps.setTimestamp(4, Timestamp.valueOf(cita.getFechaHora()));
-            // FECHA_HORA_FIN se calcula según duración de especialidad (por ahora null)
-            ps.setNull(5, Types.TIMESTAMP);
-            ps.setString(6, cita.getEstado());
 
-            int affected = ps.executeUpdate();
+            st.setTimestamp(4, Timestamp.valueOf(cita.getFechaHora()));
+            st.setNull(5, Types.TIMESTAMP); // FECHA_HORA_FIN se calcula por especialidad
+            st.setString(6, cita.getEstado());
 
-            if (affected > 0) {
-                ResultSet rs = ps.getGeneratedKeys();
+            int r = st.executeUpdate();
+
+            if (r > 0) {
+                rs = st.getGeneratedKeys();
                 if (rs.next()) {
                     int idCita = rs.getInt(1);
                     cita.setId_cita(idCita);
-                    System.out.println("Cita registrada con ID: " + idCita);
+                    System.out.println(" CITA registrada con ID: " + idCita);
                     return idCita;
                 }
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR al registrar cita: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(" ERROR AL REGISTRAR CITA: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+            System.out.println(" No se logró registrar la cita");
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
         return 0;
     }
 
+     // Solo cancela si estado es CONFIRMADA
     @Override
     public boolean cancelar(int idCita) {
-       String sql = "UPDATE CITAS SET ESTADO = 'CANCELADA' "
-                   + "WHERE ID = ? AND ESTADO = 'CONFIRMADA'";
+       PreparedStatement st;
+        String query;
 
-        try (Connection cn = ConexionSingleton.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+        try {
+            cn = ConexionSingleton.getConnection();
 
-            ps.setInt(1, idCita);
-            return ps.executeUpdate() > 0;
+            query = " UPDATE CITAS SET ESTADO = 'CANCELADA' "
+                  + " WHERE ID = ? AND ESTADO = 'CONFIRMADA' ";
+
+            st = cn.prepareStatement(query);
+            st.setInt(1, idCita);
+            int r = st.executeUpdate();
+
+            if (r > 0) {
+                System.out.println(" CITA cancelada ID: " + idCita);
+                return true;
+            }
 
         } catch (Exception e) {
-            System.out.println("ERROR al cancelar cita: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(" ERROR AL CANCELAR CITA: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
         return false;
     }
 
+    // El odontólogo marca la cita como realizada
     @Override
     public boolean marcarComoAtendida(int idCita) {
-      String sql = "UPDATE CITAS SET ESTADO = 'ATENDIDA' WHERE ID = ?";
+      PreparedStatement st;
+        String query;
 
-        try (Connection cn = ConexionSingleton.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+        try {
+            cn = ConexionSingleton.getConnection();
 
-            ps.setInt(1, idCita);
-            return ps.executeUpdate() > 0;
+            query = " UPDATE CITAS SET ESTADO = 'ATENDIDA' WHERE ID = ? ";
+
+            st = cn.prepareStatement(query);
+            st.setInt(1, idCita);
+            int r = st.executeUpdate();
+
+            if (r > 0) {
+                System.out.println(" CITA marcada como ATENDIDA ID: " + idCita);
+                return true;
+            }
 
         } catch (Exception e) {
-            System.out.println("ERROR al marcar cita como atendida: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(" ERROR AL MARCAR CITA COMO ATENDIDA: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
         return false;
     }
 
+     // Cambia la fecha y el estado a CONFIRMADA
     @Override
     public boolean reprogramar(int idCita, LocalDateTime nuevaFecha) {
-      String sql = "UPDATE CITAS SET FECHA_HORA_INICIO = ?, ESTADO = 'CONFIRMADA' "
-                   + "WHERE ID = ?";
+         PreparedStatement st;
+        String query;
 
-        try (Connection cn = ConexionSingleton.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+        try {
+            cn = ConexionSingleton.getConnection();
 
-            ps.setTimestamp(1, Timestamp.valueOf(nuevaFecha));
-            ps.setInt(2, idCita);
-            return ps.executeUpdate() > 0;
+            query = " UPDATE CITAS SET FECHA_HORA_INICIO = ?, ESTADO = 'CONFIRMADA' "
+                  + " WHERE ID = ? ";
+
+            st = cn.prepareStatement(query);
+            st.setTimestamp(1, Timestamp.valueOf(nuevaFecha));
+            st.setInt(2, idCita);
+            int r = st.executeUpdate();
+
+            if (r > 0) {
+                System.out.println(" CITA reprogramada ID: " + idCita);
+                return true;
+            }
 
         } catch (Exception e) {
-            System.out.println("ERROR al reprogramar cita: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(" ERROR AL REPROGRAMAR CITA: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
         return false;
     }
 
+    // BUSCAR POR ID — JOIN con PACIENTES y PROFESIONALES
+    // Usado también por puedeModificarOCancelar()
     @Override
     public Cita buscarPorId(int idCita) {
-      String sql = "SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, c.NOTAS, "
-                   + "pa.ID AS PAC_ID, pa.NOMBRE AS PAC_NOM, pa.APELLIDO AS PAC_APE, "
-                   + "pr.ID AS PROF_ID, pr.NOMBRE AS PROF_NOM, pr.APELLIDO AS PROF_APE "
-                   + "FROM CITAS c "
-                   + "INNER JOIN PACIENTES pa ON c.PACIENTE_ID = pa.ID "
-                   + "INNER JOIN PROFESIONALES pr ON c.PROFESIONAL_ID = pr.ID "
-                   + "WHERE c.ID = ?";
+         PreparedStatement st;
+        ResultSet rs;
+        String query;
 
-        try (Connection cn = ConexionSingleton.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+        try {
+            cn = ConexionSingleton.getConnection();
 
-            ps.setInt(1, idCita);
-            ResultSet rs = ps.executeQuery();
+            query = " SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, c.NOTAS, "
+                  + "        pa.ID AS PAC_ID, pa.NOMBRE AS PAC_NOM, pa.APELLIDO AS PAC_APE, "
+                  + "        pr.ID AS PROF_ID, pr.NOMBRE AS PROF_NOM, pr.APELLIDO AS PROF_APE "
+                  + " FROM CITAS c "
+                  + " INNER JOIN PACIENTES pa ON c.PACIENTE_ID = pa.ID "
+                  + " INNER JOIN PROFESIONALES pr ON c.PROFESIONAL_ID = pr.ID "
+                  + " WHERE c.ID = ? ";
+
+            st = cn.prepareStatement(query);
+            st.setInt(1, idCita);
+            rs = st.executeQuery();
 
             if (rs.next()) {
                 Paciente paciente = new Paciente();
@@ -148,33 +230,56 @@ public class CitaDaoImpl implements ICita{
                 cita.setId_cita(rs.getInt("ID"));
                 cita.setPaciente(paciente);
                 cita.setProfesional(profesional);
-                cita.setFechaHora(rs.getTimestamp("FECHA_HORA_INICIO").toLocalDateTime());
+
+                // ← PROTECCIÓN contra Timestamp null (evita NullPointerException en puedeCancelar)
+                Timestamp ts = rs.getTimestamp("FECHA_HORA_INICIO");
+                if (ts != null) {
+                    cita.setFechaHora(ts.toLocalDateTime());
+                }
+
                 cita.setEstado(rs.getString("ESTADO"));
                 cita.setMotivo(rs.getString("NOTAS"));
                 return cita;
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR al buscar cita por ID: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(" ERROR AL BUSCAR CITA POR ID: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
         return null;
     }
 
+     // LISTAR POR PACIENTE — Historial de citas de un paciente
     @Override
     public List<Cita> listarPorPaciente(int idPaciente) {
-       List<Cita> lista = new ArrayList<>();
-        String sql = "SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, c.NOTAS, "
-                   + "pr.ID AS PROF_ID, pr.NOMBRE AS PROF_NOM, pr.APELLIDO AS PROF_APE "
-                   + "FROM CITAS c "
-                   + "INNER JOIN PROFESIONALES pr ON c.PROFESIONAL_ID = pr.ID "
-                   + "WHERE c.PACIENTE_ID = ? ORDER BY c.FECHA_HORA_INICIO DESC";
+        List<Cita> lista = null;
+        PreparedStatement st;
+        ResultSet rs;
+        String query;
 
-        try (Connection cn = ConexionSingleton.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+        try {
+            lista = new ArrayList<>();
+            cn = ConexionSingleton.getConnection();
 
-            ps.setInt(1, idPaciente);
-            ResultSet rs = ps.executeQuery();
+            query = " SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, c.NOTAS, "
+                  + "        pr.ID AS PROF_ID, pr.NOMBRE AS PROF_NOM, pr.APELLIDO AS PROF_APE "
+                  + " FROM CITAS c "
+                  + " INNER JOIN PROFESIONALES pr ON c.PROFESIONAL_ID = pr.ID "
+                  + " WHERE c.PACIENTE_ID = ? "
+                  + " ORDER BY c.FECHA_HORA_INICIO DESC ";
+
+            st = cn.prepareStatement(query);
+            st.setInt(1, idPaciente);
+            rs = st.executeQuery();
 
             while (rs.next()) {
                 Profesional profesional = new Profesional();
@@ -185,33 +290,53 @@ public class CitaDaoImpl implements ICita{
                 Cita cita = new Cita();
                 cita.setId_cita(rs.getInt("ID"));
                 cita.setProfesional(profesional);
-                cita.setFechaHora(rs.getTimestamp("FECHA_HORA_INICIO").toLocalDateTime());
+
+                Timestamp ts = rs.getTimestamp("FECHA_HORA_INICIO");
+                if (ts != null) cita.setFechaHora(ts.toLocalDateTime());
+
                 cita.setEstado(rs.getString("ESTADO"));
                 cita.setMotivo(rs.getString("NOTAS"));
                 lista.add(cita);
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR al listar citas por paciente: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(" ERROR AL LISTAR CITAS POR PACIENTE: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
         return lista;
     }
 
+     // LISTAR POR PROFESIONAL — Agenda del odontólogo
     @Override
     public List<Cita> listarPorProfesional(int idProfesional) {
-         List<Cita> lista = new ArrayList<>();
-        String sql = "SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, c.NOTAS, "
-                   + "pa.ID AS PAC_ID, pa.NOMBRE AS PAC_NOM, pa.APELLIDO AS PAC_APE "
-                   + "FROM CITAS c "
-                   + "INNER JOIN PACIENTES pa ON c.PACIENTE_ID = pa.ID "
-                   + "WHERE c.PROFESIONAL_ID = ? ORDER BY c.FECHA_HORA_INICIO DESC";
+       List<Cita> lista = null;
+        PreparedStatement st;
+        ResultSet rs;
+        String query;
 
-        try (Connection cn = ConexionSingleton.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+        try {
+            lista = new ArrayList<>();
+            cn = ConexionSingleton.getConnection();
 
-            ps.setInt(1, idProfesional);
-            ResultSet rs = ps.executeQuery();
+            query = " SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, c.NOTAS, "
+                  + "        pa.ID AS PAC_ID, pa.NOMBRE AS PAC_NOM, pa.APELLIDO AS PAC_APE "
+                  + " FROM CITAS c "
+                  + " INNER JOIN PACIENTES pa ON c.PACIENTE_ID = pa.ID "
+                  + " WHERE c.PROFESIONAL_ID = ? "
+                  + " ORDER BY c.FECHA_HORA_INICIO DESC ";
+
+            st = cn.prepareStatement(query);
+            st.setInt(1, idProfesional);
+            rs = st.executeQuery();
 
             while (rs.next()) {
                 Paciente paciente = new Paciente();
@@ -222,33 +347,53 @@ public class CitaDaoImpl implements ICita{
                 Cita cita = new Cita();
                 cita.setId_cita(rs.getInt("ID"));
                 cita.setPaciente(paciente);
-                cita.setFechaHora(rs.getTimestamp("FECHA_HORA_INICIO").toLocalDateTime());
+
+                Timestamp ts = rs.getTimestamp("FECHA_HORA_INICIO");
+                if (ts != null) cita.setFechaHora(ts.toLocalDateTime());
+
                 cita.setEstado(rs.getString("ESTADO"));
                 cita.setMotivo(rs.getString("NOTAS"));
                 lista.add(cita);
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR al listar citas por profesional: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(" ERROR AL LISTAR CITAS POR PROFESIONAL: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
         return lista;
     }
 
+     // LISTAR TODAS — Vista general para recepción y admin
     @Override
     public List<Cita> listarTodas() {
-         List<Cita> lista = new ArrayList<>();
-        String sql = "SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, "
-                   + "pa.NOMBRE AS PAC_NOM, pa.APELLIDO AS PAC_APE, "
-                   + "pr.NOMBRE AS PROF_NOM, pr.APELLIDO AS PROF_APE "
-                   + "FROM CITAS c "
-                   + "INNER JOIN PACIENTES pa ON c.PACIENTE_ID = pa.ID "
-                   + "INNER JOIN PROFESIONALES pr ON c.PROFESIONAL_ID = pr.ID "
-                   + "ORDER BY c.FECHA_HORA_INICIO DESC";
+        List<Cita> lista = null;
+        PreparedStatement st;
+        ResultSet rs;
+        String query;
 
-        try (Connection cn = ConexionSingleton.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try {
+            lista = new ArrayList<>();
+            cn = ConexionSingleton.getConnection();
+
+            query = " SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, "
+                  + "        pa.NOMBRE AS PAC_NOM, pa.APELLIDO AS PAC_APE, "
+                  + "        pr.NOMBRE AS PROF_NOM, pr.APELLIDO AS PROF_APE "
+                  + " FROM CITAS c "
+                  + " INNER JOIN PACIENTES pa ON c.PACIENTE_ID = pa.ID "
+                  + " INNER JOIN PROFESIONALES pr ON c.PROFESIONAL_ID = pr.ID "
+                  + " ORDER BY c.FECHA_HORA_INICIO DESC ";
+
+            st = cn.prepareStatement(query);
+            rs = st.executeQuery();
 
             while (rs.next()) {
                 Paciente paciente = new Paciente();
@@ -263,90 +408,109 @@ public class CitaDaoImpl implements ICita{
                 cita.setId_cita(rs.getInt("ID"));
                 cita.setPaciente(paciente);
                 cita.setProfesional(profesional);
-                cita.setFechaHora(rs.getTimestamp("FECHA_HORA_INICIO").toLocalDateTime());
+
+                Timestamp ts = rs.getTimestamp("FECHA_HORA_INICIO");
+                if (ts != null) cita.setFechaHora(ts.toLocalDateTime());
+
                 cita.setEstado(rs.getString("ESTADO"));
                 lista.add(cita);
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR al listar todas las citas: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(" ERROR AL LISTAR TODAS LAS CITAS: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
         return lista;
     }
 
+     // Devuelve citas CONFIRMADAS de una especialidad en una fecha
+    // ORACLE: TRUNC() compara solo la fecha sin la hora
     @Override
     public List<Cita> consultarDisponibilidad(String especialidad, LocalDateTime fecha) {
-       List<Cita> lista = null;
-    PreparedStatement st;
-    ResultSet rs;
-    String query;
+    List<Cita> lista = null;
+        PreparedStatement st;
+        ResultSet rs;
+        String query;
 
-    try {
-        lista = new ArrayList<>();
-        Connection cn = ConexionSingleton.getConnection();
+        try {
+            lista = new ArrayList<>();
+            cn = ConexionSingleton.getConnection();
 
-        // ORACLE: TRUNC() para comparar solo la parte de la fecha (sin hora)
-        // Trae las citas ya CONFIRMADAS para esa especialidad y fecha
-        // con los datos del profesional y la duración de la especialidad
-        query = " SELECT c.ID, c.FECHA_HORA_INICIO, c.FECHA_HORA_FIN, c.ESTADO, "
-              + "        pr.ID AS PROF_ID, pr.NOMBRE AS PROF_NOM, pr.APELLIDO AS PROF_APE, "
-              + "        e.ID AS ESP_ID, e.NOMBRE AS ESP_NOM, e.DURACION_MINUTOS "
-              + " FROM CITAS c "
-              + " INNER JOIN PROFESIONALES pr ON c.PROFESIONAL_ID = pr.ID "
-              + " INNER JOIN ESPECIALIDADES e ON c.ESPECIALIDAD_ID = e.ID "
-              + " WHERE UPPER(e.NOMBRE) = UPPER(?) "
-              + " AND TRUNC(c.FECHA_HORA_INICIO) = TRUNC(?) "
-              + " AND c.ESTADO IN ('CONFIRMADA', 'REPROGRAMADA') "
-              + " AND pr.ACTIVO = 'S' "
-              + " ORDER BY c.FECHA_HORA_INICIO ";
+            query = " SELECT c.ID, c.FECHA_HORA_INICIO, c.FECHA_HORA_FIN, c.ESTADO, "
+                  + "        pr.ID AS PROF_ID, pr.NOMBRE AS PROF_NOM, pr.APELLIDO AS PROF_APE, "
+                  + "        e.ID AS ESP_ID, e.NOMBRE AS ESP_NOM, e.DURACION_MINUTOS "
+                  + " FROM CITAS c "
+                  + " INNER JOIN PROFESIONALES pr ON c.PROFESIONAL_ID = pr.ID "
+                  + " INNER JOIN ESPECIALIDADES e ON c.ESPECIALIDAD_ID = e.ID "
+                  + " WHERE UPPER(e.NOMBRE) = UPPER(?) "
+                  + " AND TRUNC(c.FECHA_HORA_INICIO) = TRUNC(?) "
+                  + " AND c.ESTADO IN ('CONFIRMADA', 'REPROGRAMADA') "
+                  + " AND pr.ACTIVO = 'S' "
+                  + " ORDER BY c.FECHA_HORA_INICIO ";
 
-        st = cn.prepareStatement(query);
-        st.setString(1, especialidad);
-        // ORACLE: Convertir LocalDateTime a java.sql.Timestamp
-        st.setTimestamp(2, Timestamp.valueOf(fecha));
-        rs = st.executeQuery();
+            st = cn.prepareStatement(query);
+            st.setString(1, especialidad);
+            st.setTimestamp(2, Timestamp.valueOf(fecha));
+            rs = st.executeQuery();
 
-        while (rs.next()) {
-            // Armar objeto Profesional con datos del JOIN
-            Profesional profesional = new Profesional();
-            profesional.setId(rs.getInt("PROF_ID"));
-            profesional.setNombre(rs.getString("PROF_NOM"));
-            profesional.setApellido(rs.getString("PROF_APE"));
+            while (rs.next()) {
+                Profesional profesional = new Profesional();
+                profesional.setId(rs.getInt("PROF_ID"));
+                profesional.setNombre(rs.getString("PROF_NOM"));
+                profesional.setApellido(rs.getString("PROF_APE"));
 
-            // Armar objeto Especialidad con duración (RN-D05)
-            Especialidad esp = new Especialidad();
-            esp.setId(rs.getInt("ESP_ID"));
-            esp.setNombre(rs.getString("ESP_NOM"));
-            esp.setDuracionMinutos(rs.getInt("DURACION_MINUTOS"));
+                Especialidad esp = new Especialidad();
+                esp.setId(rs.getInt("ESP_ID"));
+                esp.setNombre(rs.getString("ESP_NOM"));
+                esp.setDuracionMinutos(rs.getInt("DURACION_MINUTOS"));
 
-            // Armar objeto Cita
-            Cita cita = new Cita();
-            cita.setId_cita(rs.getInt("ID"));
-            cita.setProfesional(profesional);
-            cita.setFechaHora(rs.getTimestamp("FECHA_HORA_INICIO").toLocalDateTime());
-            cita.setEstado(rs.getString("ESTADO"));
+                Cita cita = new Cita();
+                cita.setId_cita(rs.getInt("ID"));
+                cita.setProfesional(profesional);
 
-            lista.add(cita);
+                Timestamp ts = rs.getTimestamp("FECHA_HORA_INICIO");
+                if (ts != null) cita.setFechaHora(ts.toLocalDateTime());
+
+                cita.setEstado(rs.getString("ESTADO"));
+                lista.add(cita);
+            }
+
+            System.out.println(" Disponibilidad: " + lista.size() + " citas para " + especialidad);
+
+        } catch (Exception e) {
+            System.out.println(" ERROR AL CONSULTAR DISPONIBILIDAD: " + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception e) {
+                }
+            }
         }
-
-        System.out.println(" Disponibilidad cargada: " + lista.size() + " citas para " + especialidad);
-
-    } catch (Exception e) {
-        System.out.println(" ERROR AL CONSULTAR DISPONIBILIDAD: " + e.getMessage());
-        e.printStackTrace();
-        System.out.println(" No se pudo consultar la disponibilidad");
-    }
-    return lista;
+        return lista;
     }
 
+     // Consulta la cita y aplica la regla de las 8 horas
+    // Protegido contra NullPointerException si fechaHora es null
     @Override
     public boolean puedeModificarOCancelar(int idCita) {
-      // Consulta la fecha y aplica RN-05 (más de 8 horas)
-        Cita cita = buscarPorId(idCita);
-        if (cita != null) {
-            return cita.puedeCancelar();
+      Cita cita = buscarPorId(idCita);
+        if (cita != null && cita.getFechaHora() != null) {
+            return cita.puedeCancelar(); // RN-05 está en Cita.puedeCancelar()
         }
+        System.out.println(" |AVISO| No se pudo verificar RN-05 para cita ID: " + idCita);
         return false;
     }
     

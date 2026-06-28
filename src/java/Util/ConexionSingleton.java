@@ -29,7 +29,7 @@ public class ConexionSingleton {
                 );
                 System.out.println("Conectado a Oracle XE");
  
-                // ✅ Registrar el ShutdownHook UNA SOLA VEZ
+                //  Registrar el ShutdownHook UNA SOLA VEZ
                 if (!hookRegistered) {
                     hookRegistered = true;
                     Runtime.getRuntime().addShutdownHook(new getClose());

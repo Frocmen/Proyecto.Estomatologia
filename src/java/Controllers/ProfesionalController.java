@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "ProfesionalController", urlPatterns = {"/ProfesionalController"})
 public class ProfesionalController extends HttpServlet {
 
+    // LLAMADA GLOBAL
     private final IProfesional profesionalDao = new ProfesionalDaoImpl();
     private final Gson gson = new Gson();
     
@@ -35,32 +36,60 @@ public class ProfesionalController extends HttpServlet {
         String action = request.getParameter("action");
         JsonObject jsonResponse = new JsonObject();
 
+        // Protección contra action == null
+        if (action == null) {
+            action = "listar";
+        }
+
         try (PrintWriter out = response.getWriter()) {
 
-            if ("listar".equals(action)) {
-                jsonResponse.add("data", gson.toJsonTree(profesionalDao.listarProfesionales()));
-                jsonResponse.addProperty("success", true);
+            switch (action) {
 
-            } else if ("guardar".equals(action)) {
-                Profesional p = new Profesional();
-                p.setNombre(request.getParameter("nombre"));
-                p.setApellido(request.getParameter("apellido"));
-                p.setTelefono(request.getParameter("telefono"));
-                p.setEmail(request.getParameter("email"));         
-               
+                // ── LISTAR PROFESIONALES ────────────────────────────────
+                case "listar":
+                    jsonResponse.add("data",
+                            gson.toJsonTree(profesionalDao.listarProfesionales()));
+                    jsonResponse.addProperty("success", true);
+                    break;
 
-                int id = profesionalDao.registrarProfesional(p);
-                jsonResponse.addProperty("success", id > 0);
-                jsonResponse.addProperty("message", id > 0 ? "Profesional registrado correctamente" : "Error al registrar");
+                // ── GUARDAR PROFESIONAL ─────────────────────────────────
+                case "guardar":
+                    Profesional p = new Profesional();
+                    p.setNombre(request.getParameter("nombre"));
+                    p.setApellido(request.getParameter("apellido"));
+                    p.setTelefono(request.getParameter("telefono"));
+                    p.setEmail(request.getParameter("email"));
 
-            } else if ("buscarPorEspecialidad".equals(action)) {
-                String especialidad = request.getParameter("especialidad");
-                jsonResponse.add("data", gson.toJsonTree(profesionalDao.buscarPorEspecialidad(especialidad)));
-                jsonResponse.addProperty("success", true);
+                    int id = profesionalDao.registrarProfesional(p);
+                    jsonResponse.addProperty("success", id > 0);
+                    jsonResponse.addProperty("message", id > 0
+                            ? "Profesional registrado correctamente"
+                            : "Error al registrar");
+                    break;
 
-            } else {
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Acción no válida");
+                // ── BUSCAR POR ESPECIALIDAD ─────────────────────────────
+                case "buscarPorEspecialidad":
+                    String especialidad = request.getParameter("especialidad");
+                    jsonResponse.add("data",
+                            gson.toJsonTree(profesionalDao.buscarPorEspecialidad(especialidad)));
+                    jsonResponse.addProperty("success", true);
+                    break;
+
+                // ── BUSCAR POR ID ───────────────────────────────────────
+                case "buscar":
+                    int idBuscar = Integer.parseInt(request.getParameter("id"));
+                    Profesional prof = profesionalDao.buscarPorId(idBuscar);
+                    jsonResponse.addProperty("success", prof != null);
+                    if (prof != null) {
+                        jsonResponse.add("data", gson.toJsonTree(prof));
+                    } else {
+                        jsonResponse.addProperty("message", "Profesional no encontrado");
+                    }
+                    break;
+
+                default:
+                    jsonResponse.addProperty("success", false);
+                    jsonResponse.addProperty("message", "Acción no válida");
             }
 
             out.print(jsonResponse.toString());
