@@ -24,7 +24,7 @@ public class Test_Especialidad {
         // te.existeEspecialidad();
     }
 
-    // ── LISTAR ESPECIALIDADES ACTIVAS ────────────────────────
+    // LISTAR ESPECIALIDADES ACTIVAS
     // RN-01: Solo con al menos 1 médico activo asignado
     public void listar() {
         List<Especialidad> lista = dao.listarEspecialidades();
@@ -42,7 +42,7 @@ public class Test_Especialidad {
         }
     }
 
-    // ── VERIFICAR SI EXISTE ESPECIALIDAD ────────────────────
+    // VERIFICAR SI EXISTE ESPECIALIDAD
     // RN-D09: Valida antes de mostrar al paciente
     public void existeEspecialidad() {
         String[] nombres = {"Endodoncia", "Ortodoncia", "Cirugía Laser", "Limpieza Dental"};

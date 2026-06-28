@@ -37,7 +37,7 @@ public class Test_Usuario {
         // tu.cambiarClave();
     }
 
-    // ── REGISTRAR USUARIO INTERNO ───────────────────────────
+    // REGISTRAR USUARIO INTERNO 
     public void registrarUsuario() {
         Persona p = new Persona();
         p.setNombre("Maria");
@@ -58,7 +58,7 @@ public class Test_Usuario {
         }
     }
 
-    // ── VALIDAR LOGIN ────────────────────────────────────────
+    // VALIDAR LOGIN
     public void validarUsuario() {
         // Probar con usuario interno
         System.out.println("=== PRUEBA USUARIO INTERNO ===");
@@ -88,7 +88,7 @@ public class Test_Usuario {
         }
     }
 
-    // ── BUSCAR POR USERNAME ──────────────────────────────────
+    // BUSCAR POR USERNAME 
     public void buscarPorUsername() {
         Usuario u = dao.buscarPorUsername("admin@dental.com");
         if (u != null) {
@@ -99,7 +99,7 @@ public class Test_Usuario {
         }
     }
 
-    // ── CAMBIAR CLAVE ────────────────────────────────────────
+    // CAMBIAR CLAVE
     public void cambiarClave() {
         boolean result = dao.cambiarClave(1, "nuevaClave123");
         if (result) {

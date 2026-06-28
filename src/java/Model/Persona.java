@@ -16,7 +16,7 @@ public class Persona {
     private String dni;
     private String email;
     private String telefono;
-    private String direccion; // ← AGREGADO
+    private String direccion; 
 
     public Persona() {}
 
@@ -31,31 +31,63 @@ public class Persona {
         this.direccion = direccion;
     }
 
-    // ← AGREGADO: alias getId_persona() para compatibilidad con DAOs
-    public int getId_persona() { return id; }
-    public void setId_persona(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getApellido() { return apellido; }
-    public void setApellido(String apellido) { this.apellido = apellido; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getDni() { return dni; }
-    public void setDni(String dni) { this.dni = dni; }
+    public String getApellido() {
+        return apellido;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
 
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getDni() {
+        return dni;
+    }
 
-    // ← AGREGADO
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    
 
     public String getNombreCompleto() { return nombre + " " + apellido; }
    

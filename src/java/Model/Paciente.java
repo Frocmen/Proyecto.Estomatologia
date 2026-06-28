@@ -38,45 +38,103 @@ public class Paciente{
     }
 
     // ← AGREGADO: alias getId_persona() para compatibilidad con DAOs
-    public int getId_persona() { return id; }
-    public void setId_persona(int id) { this.id = id; }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getApellido() { return apellido; }
-    public void setApellido(String apellido) { this.apellido = apellido; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getDni() { return dni; }
-    public void setDni(String dni) { this.dni = dni; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getApellido() {
+        return apellido;
+    }
 
-    public String getPasswordHash() { return passwordHash; }
-    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
 
-    public String getGoogleId() { return googleId; }
-    public void setGoogleId(String googleId) { this.googleId = googleId; }
+    public String getDni() {
+        return dni;
+    }
 
-    public String getTelefono() { return telefono; }
-    // ← SIN VALIDACIÓN AQUÍ — se valida en el Controller
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
 
-    public boolean isVerificado() { return verificado; }
-    public void setVerificado(boolean verificado) { this.verificado = verificado; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getTokenVerificacion() { return tokenVerificacion; }
-    public void setTokenVerificacion(String t) { this.tokenVerificacion = t; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public LocalDateTime getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(LocalDateTime f) { this.fechaRegistro = f; }
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public boolean isVerificado() {
+        return verificado;
+    }
+
+    public void setVerificado(boolean verificado) {
+        this.verificado = verificado;
+    }
+
+    public String getTokenVerificacion() {
+        return tokenVerificacion;
+    }
+
+    public void setTokenVerificacion(String tokenVerificacion) {
+        this.tokenVerificacion = tokenVerificacion;
+    }
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+   
 
     public String getNombreCompleto() { return nombre + " " + apellido; }
 

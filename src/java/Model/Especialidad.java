@@ -42,18 +42,39 @@ public class Especialidad {
         return new Especialidad(4, "Revisión General", DURACION_REVISION, true);
     }
 
-    // Getters y Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public int getDuracionMinutos() { return duracionMinutos; }
-    public void setDuracionMinutos(int duracionMinutos) { this.duracionMinutos = duracionMinutos; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getDuracionMinutos() {
+        return duracionMinutos;
+    }
+
+    public void setDuracionMinutos(int duracionMinutos) {
+        this.duracionMinutos = duracionMinutos;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+  
 
     @Override
     public String toString() {

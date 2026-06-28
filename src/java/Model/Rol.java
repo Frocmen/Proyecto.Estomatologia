@@ -13,5 +13,5 @@ public enum Rol {
     RECEPCIONISTA,
     MEDICO,
     PACIENTE,
-    JEFE_ADMIN   // ← AGREGADO: existe en tabla ROLES de Oracle
+    JEFE_ADMIN   
 }

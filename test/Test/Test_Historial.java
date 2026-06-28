@@ -27,7 +27,7 @@ public class Test_Historial {
         // th.listarPorProfesional();
     }
 
-    // ── REGISTRAR ATENCIÓN EN HISTORIAL ─────────────────────
+    // REGISTRAR ATENCIÓN EN HISTORIAL 
     // RF-08, RN-03: Se registra cuando odontólogo marca "Realizada"
     public void registrarAtencion() {
         Historial h = new Historial();
@@ -53,7 +53,7 @@ public class Test_Historial {
         }
     }
 
-    // ── LISTAR HISTORIAL POR CITA ────────────────────────────
+    // LISTAR HISTORIAL POR CITA 
     public void listarPorCita() {
         List<Historial> lista = dao.listarPorCita(1);
         if (lista != null && !lista.isEmpty()) {
@@ -74,7 +74,7 @@ public class Test_Historial {
         }
     }
 
-    // ── LISTAR HISTORIAL POR PROFESIONAL ────────────────────
+    // LISTAR HISTORIAL POR PROFESIONAL
     public void listarPorProfesional() {
         List<Historial> lista = dao.listarPorProfesional(1);
         if (lista != null && !lista.isEmpty()) {
