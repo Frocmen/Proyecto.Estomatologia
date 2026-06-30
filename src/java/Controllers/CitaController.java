@@ -85,22 +85,21 @@ public class CitaController extends HttpServlet {
 
                 // ── CANCELAR CITA — RN-05 APLICADA ─────────────────────
                 case "cancelar":
-                    int idCancelar = Integer.parseInt(request.getParameter("idCita"));
+                   int idCita = Integer.parseInt(request.getParameter("idCita"));
 
-                    // ✅ RN-05: Verificar si faltan más de 8 horas para la cita
+                    //  RN-05: Verificar si faltan más de 8 horas para la cita
                     // puedeModificarOCancelar() consulta la BD y aplica la regla
-                    if (!citaDao.puedeModificarOCancelar(idCancelar)) {
-                        jsonResponse.addProperty("success", false);
-                        jsonResponse.addProperty("message",
-                                "No es posible cancelar tu cita con menos de 8 horas "
-                                + "de anticipación. Por favor, comunícate directamente "
-                                + "con la recepción de Dental Health.");
-                        break; // Salir sin cancelar
+                    if (!citaDao.puedeModificarOCancelar(idCita)) {
+        jsonResponse.addProperty("success", false);
+        jsonResponse.addProperty("message", 
+            "No es posible cancelar tu cita con menos de 8 horas de anticipación. " +
+            "Comunícate con recepción.");
+        break;
                     }
 
                     // Si pasó la validación, proceder con la cancelación
-                    boolean cancelado = citaDao.cancelar(idCancelar);
-                    jsonResponse.addProperty("success", cancelado);
+                    boolean cancelado = citaDao.cancelar(idCita);
+                    jsonResponse.addProperty("success", idCita);
                     jsonResponse.addProperty("message", cancelado
                             ? "Cita cancelada correctamente"
                             : "No se pudo cancelar la cita. Verifique el estado actual.");
@@ -111,7 +110,7 @@ public class CitaController extends HttpServlet {
                     int idReprogramar = Integer.parseInt(request.getParameter("idCita"));
                     String nuevaFechaStr = request.getParameter("nuevaFecha");
 
-                    // ✅ RN-05: Misma validación para modificación
+                    //  RN-05: Misma validación para modificación
                     if (!citaDao.puedeModificarOCancelar(idReprogramar)) {
                         jsonResponse.addProperty("success", false);
                         jsonResponse.addProperty("message",

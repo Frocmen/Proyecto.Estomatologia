@@ -47,7 +47,7 @@ public class ConexionSingleton {
         @Override
         public void run() {
             try {
-                // ✅ Cerrar directamente la variable, sin llamar getConnection()
+                //  Cerrar directamente la variable, sin llamar getConnection()
                 if (connection != null && !connection.isClosed()) {
                     connection.close();
                     System.out.println("Conexión cerrada correctamente.");

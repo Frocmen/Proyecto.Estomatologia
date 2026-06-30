@@ -18,12 +18,6 @@ public class Test_Usuario {
 
   // falta ver este pedo :
     
-    //=== PRUEBA USUARIO INTERNO ===
-    //Conectado a Oracle XE
-    // CREDENCIALES INCORRECTAS
-    //=== PRUEBA PACIENTE ===
-    // CREDENCIALES INCORRECTAS
-    //Conexi�n cerrada correctamente.
     
     IUsuario dao = new UsuarioDaoImpl();
 
@@ -31,8 +25,8 @@ public class Test_Usuario {
         Test_Usuario tu = new Test_Usuario();
 
         // Descomentar el método a probar
-        // tu.registrarUsuario();
-        tu.validarUsuario();
+         tu.registrarUsuario();
+        //tu.validarUsuario();
         // tu.buscarPorUsername();
         // tu.cambiarClave();
     }
@@ -40,13 +34,13 @@ public class Test_Usuario {
     // REGISTRAR USUARIO INTERNO 
     public void registrarUsuario() {
         Persona p = new Persona();
-        p.setNombre("Maria");
-        p.setApellido("Garcia");
+        p.setNombre("Carlos");
+        p.setApellido("Mendez");
 
         Usuario u = new Usuario();
-        u.setUsuario("recepcion@dental.com");
+        u.setUsuario("carlos@dental.com ");
         u.setClave("admin123");
-        u.setRol(Rol.RECEPCIONISTA);
+        u.setRol(Rol.PACIENTE);
         u.setPersona(p);
 
         boolean result = dao.registrarUsuario(u);

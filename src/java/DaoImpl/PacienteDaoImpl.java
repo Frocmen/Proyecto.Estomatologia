@@ -20,6 +20,7 @@ public class PacienteDaoImpl implements IPaciente {
   
     @Override
     public int registrarPaciente(Paciente paciente) {
+        
         // ORACLE: INSERT con SEQUENCE + RETURNING INTO para recuperar el ID
         String sql = "INSERT INTO PACIENTES(ID, NOMBRE, APELLIDO, DNI, TELEFONO, EMAIL, "
                    + "VERIFICADO, FECHA_REGISTRO, ACTIVO) "

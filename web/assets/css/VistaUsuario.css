@@ -1,0 +1,264 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* ═══════════════════════════════════════════
+   VistaUsuario.css — Panel Paciente
+   ═══════════════════════════════════════════ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+}
+
+/* ── SIDEBAR ─────────────────────────────── */
+.sidebar {
+    background-color: #2c3e50;
+    color: white;
+    min-height: 100vh;
+    padding: 30px 20px;
+    width: 240px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar h4 {
+    color: #00b4d8;
+    margin-bottom: 35px;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+/* ── MENÚ ITEMS ──────────────────────────── */
+.menu-item {
+    padding: 14px 18px;
+    margin: 6px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #ecf0f1;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    background-color: #00b4d8;
+    color: white;
+}
+
+/* ── CONTENIDO PRINCIPAL ─────────────────── */
+.main-content {
+    margin-left: 240px;
+    padding: 40px;
+    min-height: 100vh;
+}
+
+.main-content h2 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    text-align: left;
+}
+
+/* ── CARD CONTENEDOR ─────────────────────── */
+.card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+/* ── CAMPOS DEL FORMULARIO ───────────────── */
+.campo {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    outline: none;
+    border-color: #00b4d8;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.15);
+}
+
+/* ── BOTONES ─────────────────────────────── */
+.btn {
+    padding: 11px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #00b4d8;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0077b6;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* ── LOGOUT BOTÓN ────────────────────────── */
+.logout-top {
+    position: fixed;
+    top: 15px;
+    right: 25px;
+    z-index: 200;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #e74c3c;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.logout-top:hover {
+    background-color: #c0392b;
+}
+
+/* ── TARJETAS DE CITA ────────────────────── */
+.cita-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.cita-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+}
+
+.cita-card h4 {
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.cita-card p {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+}
+
+/* ── SECCIONES ───────────────────────────── */
+.seccion {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── FOOTER ──────────────────────────────── */
+footer {
+    background-color: #1a252f;
+    color: #bdc3c7;
+    padding: 20px;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-left: 240px;
+}
+
+.social-links {
+    margin-top: 10px;
+}
+
+.social-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.social-button svg {
+    fill: #bdc3c7;
+    width: 22px;
+    height: 22px;
+    transition: fill 0.3s;
+}
+
+.social-button.instagram:hover svg { fill: #e1306c; }
+.social-button.whatsapp:hover svg  { fill: #25D366; }
+.social-button.facebook:hover svg  { fill: #1877F2; }
+
+/* ── RESPONSIVE ──────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    footer {
+        margin-left: 0;
+    }
+
+    .logout-top {
+        top: 10px;
+        right: 10px;
+    }
+}

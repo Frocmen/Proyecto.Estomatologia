@@ -3,12 +3,32 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Especialidad.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Profesional.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Paciente.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Usuario.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Citas.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Historial.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/CitaController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/ProfesionalController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/PacienteController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/HistorialController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/EspecialidadController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/AuthController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/EspecialidadDaoImpl.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/HistorialDaoImpl.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/META-INF/context.xml</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Util/ConexionSingleton.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Model/Usuario.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Model/Rol.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Model/Profesional.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Model/Persona.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Model/Paciente.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Model/Historial.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Model/Cita.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Interface/IUsuario.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Interface/IProfesional.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/registrarse.html</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/assets/css/style.css</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/assets/css/bootstrap.min.css</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/index.html</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/citas.html</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/footer.html</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/assets/js/main.js</file>
         </group>
     </open-files>
 </project-private>
