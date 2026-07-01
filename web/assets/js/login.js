@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const rol = data.userData.rol;
                     if (rol === 'ADMIN' ||
                         rol === 'RECEPCIONISTA' ||
+                        rol === 'MEDICO' ||
                         rol === 'JEFE_ADMIN') {
                         window.location.href = 'VistaDoctor.html';
                     } else {

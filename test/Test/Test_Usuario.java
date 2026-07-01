@@ -95,7 +95,7 @@ public class Test_Usuario {
 
     // CAMBIAR CLAVE
     public void cambiarClave() {
-        boolean result = dao.cambiarClave(21, "nuevaClave123");
+        boolean result = dao.cambiarClave(21, "nueva123");
         if (result) {
             System.out.println(" CLAVE ACTUALIZADA CORRECTAMENTE");
         } else {
