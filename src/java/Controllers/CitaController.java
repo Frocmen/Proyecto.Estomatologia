@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
 public class CitaController extends HttpServlet {
     
     private final ICita citaDao = new CitaDaoImpl();
-    private final Gson gson = new Gson();
+    private final Gson gson = Util.GsonProvider.getGson();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

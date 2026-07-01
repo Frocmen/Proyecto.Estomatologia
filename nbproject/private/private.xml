@@ -3,26 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/login.html</file>
             <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/index.html</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/citas.html</file>
             <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/VistaUsuario.html</file>
             <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/VistaDoctor.html</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/CitaController.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Profesional.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Especialidad.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/CitaDaoImpl.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/UsuarioDaoImpl.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/ProfesionalDaoImpl.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/PersonaDaoImpl.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/test/Test/Test_Usuario.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/VistaRecepcion.html</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/assets/js/login.js</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/assets/js/registro.js</file>
+            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/assets/js/recepcion.js</file>
             <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/PacienteDaoImpl.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/HistorialDaoImpl.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/DaoImpl/EspecialidadDaoImpl.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/ProfesionalController.java</file>
             <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/PacienteController.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/HistorialController.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/EspecialidadController.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/src/java/Controllers/AuthController.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/WEB-INF/web.xml</file>
-            <file>file:/C:/Users/andre/OneDrive/Documentos/NetBeansProjects/ProyectoLP1/web/META-INF/context.xml</file>
         </group>
     </open-files>
 </project-private>

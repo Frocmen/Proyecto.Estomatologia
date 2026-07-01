@@ -32,7 +32,7 @@ public class AuthController extends HttpServlet {
    
     private final IUsuario uDao  = new UsuarioDaoImpl();
     private final IPaciente pDao = new PacienteDaoImpl();
-    private final Gson gson = new Gson();
+    private final Gson gson = Util.GsonProvider.getGson();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
                   throws ServletException, IOException {

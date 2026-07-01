@@ -25,7 +25,7 @@ public class EspecialidadController extends HttpServlet {
     
     // LLAMADA GLOBAL
     private final IEspecialidad especialidadDao = new EspecialidadDaoImpl();
-    private final Gson gson = new Gson();
+    private final Gson gson = Util.GsonProvider.getGson();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

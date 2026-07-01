@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepción - Dental Health</title>
+    <link rel="shortcut icon" href="img/logo.ico">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/VistaRecepsion.css">
+</head>
+<body>
+ 
+    <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+ 
+    <div class="container-fluid">
+        <div class="row">
+ 
+            <!-- Sidebar -->
+            <div class="col-2 sidebar">
+                <h4><span style="font-size: 2rem;">🛎️</span> Recepción</h4>
+ 
+                <div class="menu-item active" onclick="mostrarSeccion('nueva-cita')">
+                    <span style="font-size: 1.4rem;">📅</span> Nueva Cita
+                </div>
+                <div class="menu-item" onclick="mostrarSeccion('todas-citas')">
+                    <span style="font-size: 1.4rem;">📋</span> Todas las Citas
+                </div>
+            </div>
+ 
+            <!-- Contenido Principal -->
+            <div class="col-10 main-content">
+ 
+                <!-- ══════════════ SECCIÓN: NUEVA CITA ══════════════ -->
+                <div id="seccion-nueva-cita" class="seccion">
+                    <h2>Registrar Nueva Cita</h2>
+ 
+                    <!-- Paso 1: Buscar paciente -->
+                    <div class="card" id="paso-buscar-paciente">
+                        <h3>Paso 1: Buscar Paciente</h3>
+                        <div class="campo">
+                            <label>DNI del paciente:</label>
+                            <input type="text" id="dniBusqueda" placeholder="12345678" maxlength="8">
+                        </div>
+                        <button type="button" class="btn-accion btn-inline" onclick="buscarPaciente()">
+                            Buscar Paciente
+                        </button>
+ 
+                        <div id="resultadoBusqueda" style="margin-top: 15px;"></div>
+                    </div>
+ 
+                    <!-- Paso 2a: Paciente encontrado -->
+                    <div class="card" id="paso-paciente-encontrado" style="display:none; margin-top:20px;">
+                        <h3>Paciente encontrado</h3>
+                        <p id="infoPacienteEncontrado"></p>
+                        <button type="button" class="btn-accion btn-inline" onclick="continuarConPaciente()">
+                            Continuar y agendar cita →
+                        </button>
+                        <button type="button" class="btn-secundario" onclick="reiniciarBusqueda()">
+                            Buscar otro paciente
+                        </button>
+                    </div>
+ 
+                    <!-- Paso 2b: Paciente nuevo -->
+                    <div class="card" id="paso-paciente-nuevo" style="display:none; margin-top:20px;">
+                        <h3>Paciente no encontrado — Registrar paciente nuevo</h3>
+                        <form id="formNuevoPaciente">
+                            <div class="campo">
+                                <label>DNI:</label>
+                                <input type="text" id="np-dni" maxlength="8" required>
+                            </div>
+                            <div class="campo">
+                                <label>Nombre:</label>
+                                <input type="text" id="np-nombre" placeholder="Nombre" required>
+                            </div>
+                            <div class="campo">
+                                <label>Apellido:</label>
+                                <input type="text" id="np-apellido" placeholder="Apellido">
+                            </div>
+                            <div class="campo">
+                                <label>Teléfono:</label>
+                                <input type="tel" id="np-telefono" placeholder="987654321" maxlength="9">
+                            </div>
+                            <div class="campo">
+                                <label>Email:</label>
+                                <input type="email" id="np-email" placeholder="correo@ejemplo.com">
+                            </div>
+                            <button type="submit" class="btn-accion btn-inline">
+                                Registrar y continuar →
+                            </button>
+                            <button type="button" class="btn-secundario" onclick="reiniciarBusqueda()">
+                                Cancelar
+                            </button>
+                        </form>
+                    </div>
+ 
+                    <!-- Paso 3: Datos de la cita -->
+                    <div class="card" id="paso-datos-cita" style="display:none; margin-top:20px;">
+                        <h3>Paso 2: Datos de la Cita</h3>
+                        <p id="pacienteSeleccionadoInfo" style="font-weight:bold; color:#00b4d8;"></p>
+ 
+                        <form id="formCitaRecepcion">
+                            <div class="campo">
+                                <label>Profesional:</label>
+                                <select id="profesionalId" required>
+                                    <option value="">Seleccione un profesional...</option>
+                                </select>
+                            </div>
+ 
+                            <div class="campo">
+                                <label>Especialidad / Servicio:</label>
+                                <select id="especialidadId" required>
+                                    <option value="">Seleccione una especialidad...</option>
+                                </select>
+                            </div>
+ 
+                            <div class="campo">
+                                <label>Fecha:</label>
+                                <input type="date" id="fecha" required>
+                            </div>
+ 
+                            <div class="campo">
+                                <label>Hora:</label>
+                                <select id="hora" required>
+                                    <option value="">Seleccione hora...</option>
+                                    <option value="08:00">08:00 AM</option>
+                                    <option value="09:00">09:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="14:00">02:00 PM</option>
+                                    <option value="15:00">03:00 PM</option>
+                                    <option value="16:00">04:00 PM</option>
+                                </select>
+                            </div>
+ 
+                            <div class="campo">
+                                <label>Motivo / Comentarios:</label>
+                                <textarea id="motivo" rows="3" placeholder="Ej: Dolor en muela, primera cita..."></textarea>
+                            </div>
+ 
+                            <button type="submit" class="btn-accion btn-inline">Registrar Cita</button>
+                            <button type="button" class="btn-secundario" onclick="reiniciarBusqueda()">
+                                Cancelar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+ 
+                <!-- ══════════════ SECCIÓN: TODAS LAS CITAS ══════════════ -->
+                <div id="seccion-todas-citas" class="seccion" style="display:none;">
+                    <h2>Todas las Citas del Sistema</h2>
+                    <div id="lista-todas-citas">
+                        <p>Cargando...</p>
+                    </div>
+                </div>
+ 
+            </div>
+        </div>
+    </div>
+ 
+    <footer>
+        <p>&copy; 2026 Clínica odontología - @DH</p>
+        <p>Todos los derechos reservados al autor</p>
+    </footer>
+ 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/recepcion.js"></script>
+ 
+</body>
+</html>
+ 

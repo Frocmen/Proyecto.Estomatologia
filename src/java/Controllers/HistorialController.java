@@ -30,7 +30,7 @@ public class HistorialController extends HttpServlet {
     // LLAMADA GLOBAL
     private final IHistorial historialDao = new HistorialDaoImpl();
     private final ICita citaDao = new CitaDaoImpl();
-    private final Gson gson = new Gson();
+    private final Gson gson = Util.GsonProvider.getGson();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
