@@ -25,10 +25,10 @@ public class Test_Usuario {
         Test_Usuario tu = new Test_Usuario();
 
         // Descomentar el método a probar
-         tu.registrarUsuario();
-        //tu.validarUsuario();
+        // tu.registrarUsuario();
+        //  tu.validarUsuario();
         // tu.buscarPorUsername();
-        // tu.cambiarClave();
+       tu.cambiarClave();
     }
 
     // REGISTRAR USUARIO INTERNO 
@@ -40,7 +40,7 @@ public class Test_Usuario {
         Usuario u = new Usuario();
         u.setUsuario("carlos@dental.com ");
         u.setClave("admin123");
-        u.setRol(Rol.PACIENTE);
+        u.setRol(Rol.ADMIN);
         u.setPersona(p);
 
         boolean result = dao.registrarUsuario(u);
@@ -95,7 +95,7 @@ public class Test_Usuario {
 
     // CAMBIAR CLAVE
     public void cambiarClave() {
-        boolean result = dao.cambiarClave(1, "nuevaClave123");
+        boolean result = dao.cambiarClave(21, "nuevaClave123");
         if (result) {
             System.out.println(" CLAVE ACTUALIZADA CORRECTAMENTE");
         } else {

@@ -5,13 +5,10 @@
 package Controllers;
 
 import DaoImpl.PacienteDaoImpl;
-import DaoImpl.PersonaDaoImpl;
 import DaoImpl.UsuarioDaoImpl;
 import Interface.IPaciente;
-import Interface.IPersona;
 import Interface.IUsuario;
 import Model.Paciente;
-import Model.Persona;
 import Model.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -32,111 +29,165 @@ import jakarta.servlet.http.HttpSession;
 public class AuthController extends HttpServlet {
 
     // LLAMADA GLOBAL — arquitectura del profesor
-    private final IUsuario uDao = new UsuarioDaoImpl();
+   
+    private final IUsuario uDao  = new UsuarioDaoImpl();
     private final IPaciente pDao = new PacienteDaoImpl();
     private final Gson gson = new Gson();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-       response.setContentType("application/json");
+                  throws ServletException, IOException {
+        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().print("{\"message\":\"AuthController activo\"}");
+ 
+        String action = request.getParameter("action");
+        JsonObject jsonResponse = new JsonObject();
+ 
+        if (action == null) action = "";
+ 
+        try (PrintWriter out = response.getWriter()) {
+ 
+            switch (action) {
+ 
+                // ── LOGIN ─────────────────────────────────────────────
+                case "validar":
+                    String usuario = request.getParameter("usuario");
+                    String password = request.getParameter("password");
+ 
+                    Usuario u = uDao.validate(usuario, password);
+ 
+                    if (u != null && u.getUsuario() != null) {
+                        // Guardar sesión en el servidor
+                        HttpSession session = request.getSession();
+                        session.setAttribute("usuario", u);
+                        session.setMaxInactiveInterval(1800); // 30 min
+ 
+                        // Construir userData para el frontend
+                        // CRÍTICO: estructura que espera login.js
+                        JsonObject userData = new JsonObject();
+                        userData.addProperty("id", u.getPersona() != null
+                                ? u.getPersona().getId() : 0);
+                        userData.addProperty("usuario", u.getUsuario());
+                        userData.addProperty("rol", u.getRol().name());
+ 
+                        // Datos de persona (nombre/apellido para mostrar en vistas)
+                        if (u.getPersona() != null) {
+                            JsonObject persona = new JsonObject();
+                            persona.addProperty("id",       u.getPersona().getId());
+                            persona.addProperty("nombre",   u.getPersona().getNombre());
+                            persona.addProperty("apellido", u.getPersona().getApellido() != null
+                                    ? u.getPersona().getApellido() : "");
+                            userData.add("persona", persona);
+                        }
+ 
+                        jsonResponse.addProperty("success", true);
+                        jsonResponse.add("userData", userData);
+                        jsonResponse.addProperty("message", "Login exitoso");
+                    } else {
+                        jsonResponse.addProperty("success", false);
+                        jsonResponse.addProperty("message", "Credenciales incorrectas");
+                    }
+                    break;
+ 
+                // ── REGISTRO DE PACIENTE → tabla PACIENTES Oracle ────
+                case "register":
+                    String nombre   = request.getParameter("nombre");
+    String apellido = request.getParameter("apellido");
+    String dni      = request.getParameter("dni");
+    String telefono = request.getParameter("telefono");
+    String email    = request.getParameter("email");
+    String pass     = request.getParameter("password");
+
+    System.out.println("=== REGISTRO ===");
+    System.out.println("Nombre: " + nombre);
+    System.out.println("Email:  " + email);
+
+    if (nombre == null || email == null || pass == null ||
+        nombre.trim().isEmpty() || email.trim().isEmpty() || pass.trim().isEmpty()) {
+        jsonResponse.addProperty("success", false);
+        jsonResponse.addProperty("message", "Faltan campos obligatorios");
+        break;
     }
 
-    
+    Paciente nuevo = new Paciente();
+    nuevo.setNombre(nombre.trim());
+    nuevo.setApellido(apellido != null ? apellido.trim() : "");
+    nuevo.setDni(dni         != null ? dni.trim()      : "");
+    nuevo.setTelefono(telefono != null ? telefono.trim() : "");
+    nuevo.setEmail(email.trim());
+    nuevo.setPasswordHash(pass.trim());
+
+    int idNuevo = pDao.registrarPaciente(nuevo);
+    System.out.println("ID generado: " + idNuevo);
+
+    if (idNuevo > 0) {
+        jsonResponse.addProperty("success", true);
+        jsonResponse.addProperty("message", "Paciente registrado correctamente");
+    } else {
+        jsonResponse.addProperty("success", false);
+        jsonResponse.addProperty("message", "Error al guardar en la base de datos");
+    }
+    break;
+ 
+                // ── CERRAR SESIÓN ────────────────────────────────────
+                case "salir":
+                    HttpSession sesionActual = request.getSession(false);
+                    if (sesionActual != null) {
+                        sesionActual.invalidate();
+                    }
+                    jsonResponse.addProperty("success", true);
+                    jsonResponse.addProperty("message", "Sesión cerrada");
+                    break;
+ 
+                // ── VERIFICAR SESIÓN ACTIVA ──────────────────────────
+                case "verificar":
+                    HttpSession sesionVerif = request.getSession(false);
+                    if (sesionVerif != null && sesionVerif.getAttribute("usuario") != null) {
+                        jsonResponse.addProperty("success", true);
+                        jsonResponse.addProperty("loggedIn", true);
+                    } else {
+                        jsonResponse.addProperty("success", true);
+                        jsonResponse.addProperty("loggedIn", false);
+                    }
+                    break;
+ 
+                default:
+                    jsonResponse.addProperty("success", false);
+                    jsonResponse.addProperty("message", "Acción no válida");
+            }
+ 
+            out.print(jsonResponse.toString());
+ 
+        } catch (Exception e) {
+            response.setStatus(500);
+            jsonResponse.addProperty("success", false);
+            jsonResponse.addProperty("message", "Error del servidor: " + e.getMessage());
+            e.printStackTrace();
+            response.getWriter().print(jsonResponse.toString());
+        }
+    }
+ 
+ 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-   
+ 
+ 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        String action = request.getParameter("action");
-        JsonObject jsonResponse = new JsonObject();
-
-        // Protección contra action null
-        if (action == null) {
-            action = "";
-        }
-
-        try (PrintWriter out = response.getWriter()) {
-
-            // ── VALIDAR LOGIN ──────────────────────────────────────────
-            if ("validar".equals(action)) {
-                String usuario = request.getParameter("usuario");
-                String clave = request.getParameter("password");
-
-                Usuario us = uDao.validate(usuario, clave);
-
-                if (us != null && us.getUsuario() != null) {
-                    // ABRIENDO SESIÓN
-                    HttpSession sesion = request.getSession(true);
-                    sesion.setAttribute("usuario", us);
-
-                    jsonResponse.addProperty("success", true);
-                    jsonResponse.addProperty("message", "Inicio de sesión exitoso");
-                    jsonResponse.add("userData", gson.toJsonTree(us));
-                } else {
-                    jsonResponse.addProperty("success", false);
-                    jsonResponse.addProperty("message", "Credenciales incorrectas");
-                }
-
-            // ── REGISTER — Registro de paciente nuevo ─────────────────
-            // Usa PacienteDaoImpl — tabla PACIENTES en Oracle
-            } else if ("register".equals(action)) {
-                Paciente p = new Paciente();
-                p.setNombre(request.getParameter("nombre"));
-                p.setApellido(request.getParameter("apellido"));
-                p.setDni(request.getParameter("dni"));
-                p.setTelefono(request.getParameter("telefono"));
-                p.setEmail(request.getParameter("email"));
-
-                // La contraseña se hashea en PacienteDaoImpl al guardar
-                // Si viene password del form, se guarda hasheada via UsuarioDaoImpl
-                // En este flujo básico el paciente queda VERIFICADO = 'N'
-                int resultado = pDao.registrarPaciente(p);
-
-                jsonResponse.addProperty("success", resultado > 0);
-                jsonResponse.addProperty("message", resultado > 0
-                        ? "Registro exitoso. Verifique su correo para activar su cuenta."
-                        : "Error al registrar. Verifique los datos ingresados.");
-
-            // ── SALIR — Cierre de sesión ───────────────────────────────
-            } else if ("salir".equals(action)) {
-                HttpSession session = request.getSession(false);
-                if (session != null) {
-                    session.invalidate();
-                }
-                jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("message", "Sesión cerrada correctamente");
-
-            } else {
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Acción no válida");
-            }
-
-            out.print(jsonResponse.toString());
-
-        } catch (Exception e) {
-            // ERROR 500 — Falla en lógica del servidor
-            response.setStatus(500);
-            jsonResponse.addProperty("success", false);
-            jsonResponse.addProperty("message", "Error: " + e.getMessage());
-            response.getWriter().print(jsonResponse.toString());
-        }
+        // CORREGIDO: antes tenía una copia duplicada de la lógica que
+        // ignoraba el password y no validaba email duplicado.
+        // Ahora delega a processRequest(), igual que doGet(), para que
+        // exista una única fuente de verdad para el registro/login.
+        processRequest(request, response);
     }
-
-    
+ 
+ 
     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+ 
 }

@@ -12,10 +12,11 @@ import java.util.List;
  * @author Frocmen
  */
 public interface IPaciente {
-    int registrarPaciente(Paciente paciente);
+   int registrarPaciente(Paciente paciente);
     List<Paciente> listarPacientes();
     boolean editar(Paciente paciente);
     boolean delete(int id);
     Paciente buscarPacientePorDni(String dni);
     Paciente buscarPorId(int id);
+    Paciente buscarPorEmail(String email); // ← NUEVO
 }
