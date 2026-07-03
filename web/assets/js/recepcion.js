@@ -3,18 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/JavaScript.js to edit this template
  */
 
-// ── PROTECCIÓN DE RUTA ────────────────────────────────────────
+// PROTECCIÓN DE RUTA 
 const usuarioSesion = JSON.parse(sessionStorage.getItem('sesion_usuario'));
 if (!usuarioSesion) {
     window.location.href = 'login.html';
 }
 
-// ── ESTADO DEL FLUJO ───────────────────────────────────────────
-// pacienteActual guarda { id, nombre, apellido } del paciente
-// que finalmente se usará para crear la cita (existente o recién creado).
+//ESTADO DEL FLUJO
 let pacienteActual = null;
 
-// ── INICIALIZAR ───────────────────────────────────────────────
+// INICIALIZAR 
 document.addEventListener('DOMContentLoaded', function () {
     const fechaInput = document.getElementById('fecha');
     if (fechaInput) {
@@ -26,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     mostrarSeccion('nueva-cita');
 });
 
-// ── CAMBIAR SECCIONES ─────────────────────────────────────────
+//CAMBIAR SECCIONES
 function mostrarSeccion(seccion) {
     document.querySelectorAll('.seccion').forEach(function (s) {
         s.style.display = 'none';
@@ -41,7 +39,7 @@ function mostrarSeccion(seccion) {
     if (seccion === 'todas-citas') cargarTodasCitas();
 }
 
-// ── PASO 1: BUSCAR PACIENTE POR DNI ────────────────────────────
+// BUSCAR PACIENTE POR DNI
 function buscarPaciente() {
     const dni = document.getElementById('dniBusqueda').value.trim();
 
@@ -79,13 +77,13 @@ function buscarPaciente() {
         });
 }
 
-// ── PASO 2a: CONTINUAR CON PACIENTE EXISTENTE ──────────────────
+// CONTINUAR CON PACIENTE EXISTENTE 
 function continuarConPaciente() {
     if (!pacienteActual) return;
     mostrarPasoCita();
 }
 
-// ── PASO 2b: REGISTRAR PACIENTE NUEVO ──────────────────────────
+//  REGISTRAR PACIENTE NUEVO
 document.getElementById('formNuevoPaciente').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -135,14 +133,14 @@ document.getElementById('formNuevoPaciente').addEventListener('submit', function
         });
 });
 
-// ── MOSTRAR PASO 3 (DATOS DE LA CITA) ──────────────────────────
+// (DATOS DE LA CITA)
 function mostrarPasoCita() {
     document.getElementById('pacienteSeleccionadoInfo').textContent =
         'Paciente: ' + pacienteActual.nombre + ' ' + (pacienteActual.apellido || '') + ' (ID: ' + pacienteActual.id + ')';
     document.getElementById('paso-datos-cita').style.display = 'block';
 }
 
-// ── REINICIAR TODO EL FLUJO ─────────────────────────────────────
+// REINICIAR TODO EL FLUJO
 function reiniciarBusqueda() {
     pacienteActual = null;
     document.getElementById('dniBusqueda').value = '';
@@ -154,7 +152,7 @@ function reiniciarBusqueda() {
     document.getElementById('paso-datos-cita').style.display = 'none';
 }
 
-// ── CARGAR PROFESIONALES ──────────────────────────────────────
+// CARGAR PROFESIONALES
 function cargarProfesionales() {
     fetch('ProfesionalController?action=listar')
         .then(function (res) { return res.json(); })
@@ -171,7 +169,7 @@ function cargarProfesionales() {
         });
 }
 
-// ── CARGAR ESPECIALIDADES ─────────────────────────────────────
+// CARGAR ESPECIALIDADES
 function cargarEspecialidades() {
     fetch('EspecialidadController?action=listar')
         .then(function (res) { return res.json(); })
@@ -188,7 +186,7 @@ function cargarEspecialidades() {
         });
 }
 
-// ── PASO 3: REGISTRAR LA CITA ───────────────────────────────────
+//REGISTRAR LA CITA 
 document.getElementById('formCitaRecepcion').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -242,7 +240,7 @@ document.getElementById('formCitaRecepcion').addEventListener('submit', function
         });
 });
 
-// ── LISTAR TODAS LAS CITAS (vista general de recepción) ───────
+// LISTAR TODAS LAS CITAS (vista general de recepción)
 function cargarTodasCitas() {
     const contenedor = document.getElementById('lista-todas-citas');
     if (!contenedor) return;
@@ -282,7 +280,7 @@ function cargarTodasCitas() {
         });
 }
 
-// ── CERRAR SESIÓN ─────────────────────────────────────────────
+//CERRAR SESIÓN 
 document.getElementById('logoutBtn').addEventListener('click', function () {
     if (confirm('¿Estás seguro de cerrar sesión?')) {
         fetch('AuthController?action=salir', { method: 'POST' })

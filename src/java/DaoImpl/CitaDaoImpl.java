@@ -22,7 +22,7 @@ import java.util.List;
 public class CitaDaoImpl implements ICita{
     
       private Connection cn;
- // ESPECIALIDAD_ID viene de cita.getEspecialidadId() — no del profesional
+ 
     @Override
     public int registrar(Cita cita) {
          PreparedStatement st;
@@ -41,7 +41,7 @@ public class CitaDaoImpl implements ICita{
             st.setInt(1, cita.getPaciente().getId());
             st.setInt(2, cita.getProfesional().getId());
 
-            // ← CORRECCIÓN: ESPECIALIDAD_ID desde cita.getEspecialidadId()
+            
             if (cita.getEspecialidadId() > 0) {
                 st.setInt(3, cita.getEspecialidadId());
             } else {
@@ -49,7 +49,7 @@ public class CitaDaoImpl implements ICita{
             }
 
             st.setTimestamp(4, Timestamp.valueOf(cita.getFechaHora()));
-            st.setNull(5, Types.TIMESTAMP); // FECHA_HORA_FIN se calcula por especialidad
+            st.setNull(5, Types.TIMESTAMP); 
             st.setString(6, cita.getEstado());
 
             int r = st.executeUpdate();
@@ -81,7 +81,7 @@ public class CitaDaoImpl implements ICita{
         return 0;
     }
 
-     // Solo cancela si estado es CONFIRMADA
+   
     @Override
     public boolean cancelar(int idCita) {
        PreparedStatement st;
@@ -118,7 +118,7 @@ public class CitaDaoImpl implements ICita{
         return false;
     }
 
-    // El odontólogo marca la cita como realizada
+   
     @Override
     public boolean marcarComoAtendida(int idCita) {
       PreparedStatement st;
@@ -154,7 +154,7 @@ public class CitaDaoImpl implements ICita{
         return false;
     }
 
-     // Cambia la fecha y el estado a CONFIRMADA
+     
     @Override
     public boolean reprogramar(int idCita, LocalDateTime nuevaFecha) {
          PreparedStatement st;
@@ -192,8 +192,7 @@ public class CitaDaoImpl implements ICita{
         return false;
     }
 
-    // BUSCAR POR ID — JOIN con PACIENTES y PROFESIONALES
-    // Usado también por puedeModificarOCancelar()
+   
     @Override
     public Cita buscarPorId(int idCita) {
        String sql = "SELECT c.ID, c.FECHA_HORA_INICIO, c.ESTADO, c.NOTAS, "
@@ -240,7 +239,7 @@ public class CitaDaoImpl implements ICita{
     return null;
     }
 
-     // LISTAR POR PACIENTE — Historial de citas de un paciente
+     
     @Override
     public List<Cita> listarPorPaciente(int idPaciente) {
         List<Cita> lista = null;
@@ -297,7 +296,7 @@ public class CitaDaoImpl implements ICita{
         return lista;
     }
 
-     // LISTAR POR PROFESIONAL — Agenda del odontólogo
+     
     @Override
     public List<Cita> listarPorProfesional(int idProfesional) {
        List<Cita> lista = null;
@@ -354,7 +353,7 @@ public class CitaDaoImpl implements ICita{
         return lista;
     }
 
-     // LISTAR TODAS — Vista general para recepción y admin
+     
     @Override
     public List<Cita> listarTodas() {
       List<Cita> lista = new ArrayList<>();
@@ -399,8 +398,7 @@ public class CitaDaoImpl implements ICita{
     return lista;
 }
 
-     // Devuelve citas CONFIRMADAS de una especialidad en una fecha
-    // ORACLE: TRUNC() compara solo la fecha sin la hora
+    
     @Override
     public List<Cita> consultarDisponibilidad(String especialidad, LocalDateTime fecha) {
     List<Cita> lista = null;
@@ -469,13 +467,12 @@ public class CitaDaoImpl implements ICita{
         return lista;
     }
 
-     // Consulta la cita y aplica la regla de las 8 horas
-    // Protegido contra NullPointerException si fechaHora es null
+     
     @Override
     public boolean puedeModificarOCancelar(int idCita) {
       Cita cita = buscarPorId(idCita);
         if (cita != null && cita.getFechaHora() != null) {
-            return cita.puedeCancelar(); // RN-05 está en Cita.puedeCancelar()
+            return cita.puedeCancelar(); 
         }
         System.out.println(" |AVISO| No se pudo verificar RN-05 para cita ID: " + idCita);
         return false;

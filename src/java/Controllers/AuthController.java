@@ -48,7 +48,7 @@ public class AuthController extends HttpServlet {
  
             switch (action) {
  
-                // ── LOGIN ─────────────────────────────────────────────
+                
                 case "validar":
                     String usuario = request.getParameter("usuario");
                     String password = request.getParameter("password");
@@ -61,15 +61,14 @@ public class AuthController extends HttpServlet {
                         session.setAttribute("usuario", u);
                         session.setMaxInactiveInterval(1800); // 30 min
  
-                        // Construir userData para el frontend
-                        // CRÍTICO: estructura que espera login.js
+                        
                         JsonObject userData = new JsonObject();
                         userData.addProperty("id", u.getPersona() != null
                                 ? u.getPersona().getId() : 0);
                         userData.addProperty("usuario", u.getUsuario());
                         userData.addProperty("rol", u.getRol().name());
  
-                        // Datos de persona (nombre/apellido para mostrar en vistas)
+                       
                         if (u.getPersona() != null) {
                             JsonObject persona = new JsonObject();
                             persona.addProperty("id",       u.getPersona().getId());
@@ -88,7 +87,7 @@ public class AuthController extends HttpServlet {
                     }
                     break;
  
-                // ── REGISTRO DE PACIENTE → tabla PACIENTES Oracle ────
+                
                 case "register":
                     String nombre   = request.getParameter("nombre");
     String apellido = request.getParameter("apellido");
@@ -128,7 +127,7 @@ public class AuthController extends HttpServlet {
     }
     break;
  
-                // ── CERRAR SESIÓN ────────────────────────────────────
+               
                 case "salir":
                     HttpSession sesionActual = request.getSession(false);
                     if (sesionActual != null) {
@@ -138,7 +137,7 @@ public class AuthController extends HttpServlet {
                     jsonResponse.addProperty("message", "Sesión cerrada");
                     break;
  
-                // ── VERIFICAR SESIÓN ACTIVA ──────────────────────────
+              
                 case "verificar":
                     HttpSession sesionVerif = request.getSession(false);
                     if (sesionVerif != null && sesionVerif.getAttribute("usuario") != null) {
@@ -177,10 +176,7 @@ public class AuthController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // CORREGIDO: antes tenía una copia duplicada de la lógica que
-        // ignoraba el password y no validaba email duplicado.
-        // Ahora delega a processRequest(), igual que doGet(), para que
-        // exista una única fuente de verdad para el registro/login.
+        
         processRequest(request, response);
     }
  

@@ -14,7 +14,7 @@ import java.sql.Connection;
 public class Test_BD {
 
     /**
-     * @param args the command line arguments
+     * @param args 
      */
     public static void main(String[] args) {
         Test_BD t = new Test_BD();

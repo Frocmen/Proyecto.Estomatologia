@@ -35,7 +35,7 @@ public class EspecialidadController extends HttpServlet {
         String action = request.getParameter("action");
         JsonObject jsonResponse = new JsonObject();
 
-        // Protección contra action == null
+       
         if (action == null) {
             action = "listar";
         }
@@ -44,16 +44,14 @@ public class EspecialidadController extends HttpServlet {
 
             switch (action) {
 
-                // ── LISTAR ESPECIALIDADES ACTIVAS ───────────────────────
-                // RN-01: Solo especialidades con al menos 1 médico activo
+               
                 case "listar":
                     jsonResponse.add("data",
                             gson.toJsonTree(especialidadDao.listarEspecialidades()));
                     jsonResponse.addProperty("success", true);
                     break;
 
-                // ── VERIFICAR SI EXISTE UNA ESPECIALIDAD ────────────────
-                // RN-D09 del CU-03: validar que la especialidad exista
+                
                 case "existe":
                     String nombre = request.getParameter("nombre");
                     boolean existe = especialidadDao.existeEspecialidad(nombre);

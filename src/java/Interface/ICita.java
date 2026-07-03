@@ -13,9 +13,9 @@ import java.util.List;
  * @author Frocmen
  */
 public interface ICita {
-  int registrar(Cita cita);                    // RN-01
-    boolean cancelar(int idCita);                // RN-05, RN-10
-    boolean marcarComoAtendida(int idCita);      // RN-03
+  int registrar(Cita cita);                  
+    boolean cancelar(int idCita);                
+    boolean marcarComoAtendida(int idCita);      
     boolean reprogramar(int idCita, LocalDateTime nuevaFecha); 
     
     Cita buscarPorId(int idCita);
@@ -23,9 +23,9 @@ public interface ICita {
     List<Cita> listarPorProfesional(int idProfesional);
     List<Cita> listarTodas();
     
-    // Consultar disponibilidad (HU-02)
+    
     List<Cita> consultarDisponibilidad(String especialidad, LocalDateTime fecha);
     
-    // RN-05: Verificar si se puede modificar/cancelar
+    
     boolean puedeModificarOCancelar(int idCita);
 }

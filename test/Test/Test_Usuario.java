@@ -24,14 +24,13 @@ public class Test_Usuario {
     public static void main(String[] args) {
         Test_Usuario tu = new Test_Usuario();
 
-        // Descomentar el método a probar
         // tu.registrarUsuario();
         //  tu.validarUsuario();
         // tu.buscarPorUsername();
        tu.cambiarClave();
     }
 
-    // REGISTRAR USUARIO INTERNO 
+    
     public void registrarUsuario() {
         Persona p = new Persona();
         p.setNombre("Carlos");
@@ -52,9 +51,9 @@ public class Test_Usuario {
         }
     }
 
-    // VALIDAR LOGIN
+ 
     public void validarUsuario() {
-        // Probar con usuario interno
+        
         System.out.println("=== PRUEBA USUARIO INTERNO ===");
         Usuario u = dao.validate("admin@dental.com", "admin123");
         if (u != null && u.getUsuario() != null) {
@@ -67,7 +66,7 @@ public class Test_Usuario {
             System.out.println(" CREDENCIALES INCORRECTAS");
         }
 
-        // Probar con paciente
+     
         System.out.println("=== PRUEBA PACIENTE ===");
         Usuario up = dao.validate("juan@email.com", "admin123");
         if (up != null && up.getUsuario() != null) {
@@ -82,7 +81,7 @@ public class Test_Usuario {
         }
     }
 
-    // BUSCAR POR USERNAME 
+
     public void buscarPorUsername() {
         Usuario u = dao.buscarPorUsername("admin@dental.com");
         if (u != null) {
@@ -91,9 +90,9 @@ public class Test_Usuario {
         } else {
             System.out.println(" |ERROR| Usuario no encontrado");
         }
-    }
 
-    // CAMBIAR CLAVE
+    }
+    
     public void cambiarClave() {
         boolean result = dao.cambiarClave(23, "Recepción123");
         if (result) {

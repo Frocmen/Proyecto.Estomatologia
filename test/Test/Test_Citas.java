@@ -45,7 +45,7 @@ public class Test_Citas {
         Cita cita = new Cita();
         cita.setPaciente(paciente);
         cita.setProfesional(profesional);
-        cita.setEspecialidadId(1); // ← ID de la especialidad en tabla ESPECIALIDADES
+        cita.setEspecialidadId(1); 
         cita.setFechaHora(LocalDateTime.of(2026, 8, 15, 10, 0));
         cita.setEstado("CONFIRMADA");
         cita.setMotivo("Revisión general");

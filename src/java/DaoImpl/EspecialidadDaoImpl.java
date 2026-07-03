@@ -30,8 +30,7 @@ public class EspecialidadDaoImpl implements IEspecialidad{
             lista = new ArrayList<>();
             cn = ConexionSingleton.getConnection();
 
-            // ORACLE: Solo especialidades que tengan al menos 1 profesional activo
-            // Esta es la RN-01 del CU-03 aplicada en la consulta
+            
             query = " SELECT DISTINCT e.ID, e.NOMBRE, e.DURACION_MINUTOS, e.ACTIVO "
                   + " FROM ESPECIALIDADES e "
                   + " INNER JOIN PROFESIONAL_ESPECIALIDAD pe ON e.ID = pe.ESPECIALIDAD_ID "
@@ -80,7 +79,7 @@ public class EspecialidadDaoImpl implements IEspecialidad{
         try {
             cn = ConexionSingleton.getConnection();
 
-            // UPPER para comparación case-insensitive en Oracle
+          
             query = " SELECT COUNT(*) AS TOTAL "
                   + " FROM ESPECIALIDADES "
                   + " WHERE UPPER(NOMBRE) = UPPER(?) "

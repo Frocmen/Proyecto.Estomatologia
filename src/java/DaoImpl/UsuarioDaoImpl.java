@@ -18,7 +18,7 @@ import java.sql.*;
  */
 public class UsuarioDaoImpl implements IUsuario{
 
-   // ── HASH SHA-256 ─────────────────────────────────────────
+
     private String hashClave(String clave) {
         try {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -34,13 +34,13 @@ public class UsuarioDaoImpl implements IUsuario{
     }
 }
 
-    // ── VALIDAR LOGIN ─────────────────────────────────────────
-    // Busca primero en USUARIOS_INTERNOS, luego en PACIENTES
+    
+
     @Override
     public Usuario validate(String correo, String clave) {
         String claveHash = hashClave(clave);
 
-        // 1. Buscar en USUARIOS_INTERNOS (admin, recepcionista, jefe)
+    
         String sqlInterno = "SELECT u.ID, u.NOMBRE, u.APELLIDO, u.EMAIL, r.NOMBRE AS ROL "
                           + "FROM USUARIOS_INTERNOS u "
                           + "INNER JOIN USUARIO_ROL ur ON u.ID = ur.USUARIO_ID "
@@ -118,7 +118,7 @@ public class UsuarioDaoImpl implements IUsuario{
         return null;
     }
 
-    // ── REGISTRAR USUARIO INTERNO ────────────────────────────
+  
     @Override
     public boolean registrarUsuario(Usuario usuario) {
         String sql = "INSERT INTO USUARIOS_INTERNOS(ID, NOMBRE, APELLIDO, EMAIL, "
@@ -174,7 +174,7 @@ public class UsuarioDaoImpl implements IUsuario{
         return 0;
     }
 
-    // ── BUSCAR POR USERNAME ──────────────────────────────────
+  
     @Override
     public Usuario buscarPorUsername(String username) {
         String sql = "SELECT u.ID, u.NOMBRE, u.APELLIDO, u.EMAIL, r.NOMBRE AS ROL "
@@ -213,7 +213,7 @@ public class UsuarioDaoImpl implements IUsuario{
         return null;
     }
 
-    // ── CAMBIAR CLAVE ────────────────────────────────────────
+
     @Override
     public boolean cambiarClave(int idUsuario, String nuevaClave) {
         String claveHash = hashClave(nuevaClave);

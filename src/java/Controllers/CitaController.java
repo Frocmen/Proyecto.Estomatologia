@@ -27,35 +27,64 @@ import java.time.format.DateTimeFormatter;
  */
 @WebServlet(name = "CitaController", urlPatterns = {"/CitaController"})
 public class CitaController extends HttpServlet {
-    
+
     private final ICita citaDao = new CitaDaoImpl();
     private final Gson gson = Util.GsonProvider.getGson();
-    
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       response.setContentType("application/json");
+        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action");
         JsonObject jsonResponse = new JsonObject();
         if (action == null) action = "listarTodas";
 
-        try (PrintWriter out = response.getWriter()) {
+       
+        PrintWriter out = response.getWriter();
 
+        try {
             switch (action) {
 
-                // ── REGISTRAR CITA ───────────────────────────────────
+               
                 case "registrar":
-                    int pacienteId    = Integer.parseInt(request.getParameter("pacienteId"));
-                    int profesionalId = Integer.parseInt(request.getParameter("profesionalId"));
-                    int especialidadId = Integer.parseInt(
-                            request.getParameter("especialidadId") != null
-                            ? request.getParameter("especialidadId") : "1");
+                    String pacienteIdStr    = request.getParameter("pacienteId");
+                    String profesionalIdStr = request.getParameter("profesionalId");
+                    String especialidadIdStr = request.getParameter("especialidadId");
                     String fechaStr   = request.getParameter("fechaHora");
                     String motivo     = request.getParameter("motivo");
 
-                    LocalDateTime fechaHora = LocalDateTime.parse(fechaStr,
-                            DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    if (pacienteIdStr == null || profesionalIdStr == null
+                            || especialidadIdStr == null || fechaStr == null) {
+                        jsonResponse.addProperty("success", false);
+                        jsonResponse.addProperty("message", "Faltan campos obligatorios para registrar la cita");
+                        break;
+                    }
+
+                    int pacienteId;
+                    int profesionalId;
+                    int especialidadId;
+                    try {
+                        pacienteId    = Integer.parseInt(pacienteIdStr);
+                        profesionalId = Integer.parseInt(profesionalIdStr);
+                        especialidadId = Integer.parseInt(especialidadIdStr);
+                    } catch (NumberFormatException nfe) {
+                       
+                        jsonResponse.addProperty("success", false);
+                        jsonResponse.addProperty("message",
+                                "especialidadId/pacienteId/profesionalId deben ser numéricos. "
+                                + "Recibido especialidadId='" + especialidadIdStr + "'");
+                        break;
+                    }
+
+                    LocalDateTime fechaHora;
+                    try {
+                        fechaHora = LocalDateTime.parse(fechaStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    } catch (Exception dateEx) {
+                        jsonResponse.addProperty("success", false);
+                        jsonResponse.addProperty("message", "Formato de fecha inválido: " + fechaStr);
+                        break;
+                    }
 
                     Paciente pac = new Paciente();
                     pac.setId(pacienteId);
@@ -79,7 +108,7 @@ public class CitaController extends HttpServlet {
                     if (idCita > 0) jsonResponse.addProperty("id", idCita);
                     break;
 
-                // ── CANCELAR CITA — RN-05 ────────────────────────────
+               
                 case "cancelar":
                     int idCancelar = Integer.parseInt(request.getParameter("idCita"));
 
@@ -97,7 +126,7 @@ public class CitaController extends HttpServlet {
                             : "Error al cancelar la cita");
                     break;
 
-                // ── REPROGRAMAR CITA — RN-05 ─────────────────────────
+                
                 case "reprogramar":
                     int idReprog = Integer.parseInt(request.getParameter("idCita"));
                     String nuevaFechaStr = request.getParameter("nuevaFecha");
@@ -117,7 +146,7 @@ public class CitaController extends HttpServlet {
                             : "Error al reprogramar");
                     break;
 
-                // ── MARCAR COMO ATENDIDA ─────────────────────────────
+            
                 case "atender":
                     int idAtender = Integer.parseInt(request.getParameter("idCita"));
                     boolean atendida = citaDao.marcarComoAtendida(idAtender);
@@ -127,7 +156,7 @@ public class CitaController extends HttpServlet {
                             : "Error al marcar");
                     break;
 
-                // ── LISTAR POR PACIENTE ──────────────────────────────
+               
                 case "listarPorPaciente":
                     int idPac = Integer.parseInt(request.getParameter("pacienteId"));
                     jsonResponse.add("data",
@@ -135,7 +164,7 @@ public class CitaController extends HttpServlet {
                     jsonResponse.addProperty("success", true);
                     break;
 
-                // ── LISTAR POR PROFESIONAL ───────────────────────────
+                
                 case "listarPorProfesional":
                     int idProf = Integer.parseInt(request.getParameter("profesionalId"));
                     jsonResponse.add("data",
@@ -143,13 +172,13 @@ public class CitaController extends HttpServlet {
                     jsonResponse.addProperty("success", true);
                     break;
 
-                // ── LISTAR TODAS ─────────────────────────────────────
+              
                 case "listarTodas":
                     jsonResponse.add("data", gson.toJsonTree(citaDao.listarTodas()));
                     jsonResponse.addProperty("success", true);
                     break;
 
-                // ── DISPONIBILIDAD ───────────────────────────────────
+                
                 case "disponibilidad":
                     String esp  = request.getParameter("especialidad");
                     String fStr = request.getParameter("fecha");
@@ -171,24 +200,27 @@ public class CitaController extends HttpServlet {
             response.setStatus(400);
             jsonResponse.addProperty("success", false);
             jsonResponse.addProperty("message", "Parámetro numérico inválido: " + e.getMessage());
-            response.getWriter().print(jsonResponse.toString());
+            out.print(jsonResponse.toString()); 
         } catch (Exception e) {
             response.setStatus(500);
             jsonResponse.addProperty("success", false);
             jsonResponse.addProperty("message", "Error del servidor: " + e.getMessage());
             e.printStackTrace();
-            response.getWriter().print(jsonResponse.toString());
+            out.print(jsonResponse.toString()); 
+        } finally {
+            out.flush();
+            out.close();
         }
     }
 
-   
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

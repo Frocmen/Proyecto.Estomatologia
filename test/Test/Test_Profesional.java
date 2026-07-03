@@ -19,14 +19,13 @@ public class Test_Profesional {
     public static void main(String[] args) {
         Test_Profesional tpr = new Test_Profesional();
 
-        // Descomentar el método a probar
         // tpr.registrar();
         tpr.listar();
         // tpr.buscarPorEspecialidad();
         // tpr.buscarPorId();
     }
 
-    // REGISTRAR PROFESIONAL
+   
     public void registrar() {
         Profesional p = new Profesional();
         p.setNombre("Luis");
@@ -42,7 +41,7 @@ public class Test_Profesional {
         }
     }
 
-    // LISTAR PROFESIONALES
+ 
     public void listar() {
         List<Profesional> lista = dao.listarProfesionales();
         if (lista != null && !lista.isEmpty()) {
@@ -59,7 +58,7 @@ public class Test_Profesional {
         }
     }
 
-    // BUSCAR POR ESPECIALIDAD 
+
     public void buscarPorEspecialidad() {
         List<Profesional> lista = dao.buscarPorEspecialidad("Endodoncia");
         if (lista != null && !lista.isEmpty()) {
@@ -75,7 +74,7 @@ public class Test_Profesional {
         }
     }
 
-    // BUSCAR POR ID 
+
     public void buscarPorId() {
         Profesional p = dao.buscarPorId(1);
         if (p != null) {

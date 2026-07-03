@@ -1,10 +1,10 @@
-// ── PROTECCIÓN DE RUTA ────────────────────────────────────────
+// PROTECCIÓN DE RUTA
 const usuarioSesion = JSON.parse(sessionStorage.getItem('sesion_usuario'));
 if (!usuarioSesion) {
     window.location.href = 'login.html';
 }
 
-// ── INICIALIZAR ───────────────────────────────────────────────
+// INICIALIZAR 
 document.addEventListener('DOMContentLoaded', function () {
 
     // Fecha mínima = hoy
@@ -16,11 +16,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cargar profesionales en el select
     cargarProfesionales();
 
+    cargarEspecialidades();
+
     // Mostrar sección inicial
     mostrarSeccion('agendar');
 });
 
-// ── CAMBIAR SECCIONES ─────────────────────────────────────────
+// CAMBIAR SECCIONES 
 function mostrarSeccion(seccion) {
     document.querySelectorAll('.seccion').forEach(function(s) {
         s.style.display = 'none';
@@ -37,7 +39,7 @@ function mostrarSeccion(seccion) {
     if (seccion === 'historial') cargarHistorial();
 }
 
-// ── CARGAR PROFESIONALES ──────────────────────────────────────
+// CARGAR PROFESIONALES
 function cargarProfesionales() {
     fetch('ProfesionalController?action=listar')
     .then(function(res) { return res.json(); })
@@ -59,15 +61,39 @@ function cargarProfesionales() {
     });
 }
 
-// ── AGENDAR CITA ──────────────────────────────────────────────
+// CARGAR ESPECIALIDADES 
+
+function cargarEspecialidades() {
+    fetch('EspecialidadController?action=listar')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        const select = document.getElementById('servicio');
+        if (!select) return;
+        select.innerHTML = '<option value="">Seleccione un servicio</option>';
+        const lista = data.data || [];
+        lista.forEach(function(e) {
+            select.innerHTML += '<option value="' + e.id + '">' + e.nombre + '</option>';
+        });
+    })
+    .catch(function() {
+        console.error('No se pudo cargar la lista de especialidades');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudieron cargar los servicios disponibles. Recarga la página.'
+        });
+    });
+}
+
+//AGENDAR CITA
 document.getElementById('formCita').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const servicio      = document.getElementById('servicio').value;
-    const profesionalId = document.getElementById('profesionalId').value;
-    const fecha         = document.getElementById('fecha').value;
-    const hora          = document.getElementById('hora').value;
-    const comentarios   = document.getElementById('comentarios').value;
+    const servicio       = document.getElementById('servicio').value; // ahora es un ID numérico
+    const profesionalId  = document.getElementById('profesionalId').value;
+    const fecha           = document.getElementById('fecha').value;
+    const hora             = document.getElementById('hora').value;
+    const comentarios    = document.getElementById('comentarios').value;
 
     if (!servicio || !fecha || !hora) {
         Swal.fire({
@@ -103,7 +129,7 @@ document.getElementById('formCita').addEventListener('submit', function(e) {
     const datos = new URLSearchParams();
     datos.append('pacienteId',    pacienteId);
     datos.append('profesionalId', profesionalId);
-    datos.append('especialidadId', servicio);
+    datos.append('especialidadId', servicio); // ahora sí es un ID numérico válido
     datos.append('fechaHora',     fechaHora);
     datos.append('motivo',        comentarios || 'Consulta');
     datos.append('estado',        'CONFIRMADA');
@@ -194,7 +220,7 @@ function cargarCitas() {
                   + cita.estado + '</span></p>';
 
             if (cita.estado === 'CONFIRMADA') {
-                html += '<button onclick="cancelarCita(' + cita.id_cita + ')" '
+                html += '<button onclick="cancelarCita(' + cita.id + ')" '
                       + 'style="background:#e74c3c;color:white;border:none;'
                       + 'padding:6px 14px;border-radius:6px;cursor:pointer;'
                       + 'margin-top:8px;">Cancelar Cita</button>';

@@ -25,7 +25,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <!-- Sidebar -->
             <div class="col-2 sidebar">
                 <h4><span style="font-size: 2rem;">🦷</span> Dental Health</h4>
-                
+
                 <div class="menu-item active" onclick="mostrarSeccion('agendar')">
                     <span style="font-size: 1.4rem;">📅</span> Agendar Cita
                 </div>
@@ -46,29 +46,36 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                     <div class="card">
                         <form id="formCita">
                             <div class="campo">
-                                <div class="campo">
-                    <label>Nombre completo:</label>
-                    <input type="text" id="nombre" placeholder="Ej: Jhonatan López" required>
-                </div>
+                                <label>Nombre completo:</label>
+                                <input type="text" id="nombre" placeholder="Ej: Jhonatan López" required>
+                            </div>
 
-                <div class="campo">
-                    <label>Teléfono:</label>
-                    <input type="tel" id="telefono" placeholder="987 654 321" required>
-                </div>
+                            <div class="campo">
+                                <label>Teléfono:</label>
+                                <input type="tel" id="telefono" placeholder="987 654 321" required>
+                            </div>
 
-                <div class="campo">
-                    <label>Correo electrónico:</label>
-                    <input type="email" id="email" placeholder="ejemplo@correo.com" required>
-                </div>
+                            <div class="campo">
+                                <label>Correo electrónico:</label>
+                                <input type="email" id="email" placeholder="ejemplo@correo.com" required>
+                            </div>
+
+                            <!-- CORREGIDO: antes tenía "options" con valores de TEXTO
+                                 (value="Ortodoncia"), que el backend no podía convertir
+                                 a número (Integer.parseInt fallaba). Ahora se llena
+                                 dinámicamente vía cargarEspecialidades() en usuario.js,
+                                 igual que ya hacía recepcion.js, con value = ID real. -->
+                            <div class="campo">
                                 <label>Servicio deseado:</label>
                                 <select id="servicio" required>
                                     <option value="">Seleccione un servicio</option>
-                                    <option value="Limpieza Dental">Limpieza Dental Profunda</option>
-                                    <option value="Blanqueamiento">Blanqueamiento Dental</option>
-                                    <option value="Consulta General">Consulta General</option>
-                                    <option value="Empaste">Empaste por Caries</option>
-                                    <option value="Ortodoncia">Evaluación de Ortodoncia</option>
-                                    <option value="Extracción">Extracción Dental</option>
+                                </select>
+                            </div>
+
+                            <div class="campo">
+                                <label>Profesional:</label>
+                                <select id="profesionalId" required>
+                                    <option value="">Seleccione un profesional</option>
                                 </select>
                             </div>
 
@@ -112,7 +119,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 <div id="seccion-historial" class="seccion" style="display: none;">
                     <h2>Historial de Atenciones</h2>
                     <div class="card">
-                        <p class="text-muted">Próximamente podrás ver aquí tu historial completo de tratamientos.</p>
+                        <div id="lista-historial">
+                            <p class="text-muted">Próximamente podrás ver aquí tu historial completo de tratamientos.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -149,6 +158,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         </div>
     </footer>
 
+    <!-- IMPORTANTE: solo debe haber UN <script> que maneje #formCita.
+         No agregues aquí ningún otro <script> inline con
+         addEventListener('submit', ...) sobre #formCita, ni un
+         segundo archivo .js viejo (ej. agendar.js) — eso duplica el
+         listener y bloquea el envío real a CitaController. -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/js/usuario.js"></script>
 

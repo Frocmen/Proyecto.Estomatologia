@@ -40,7 +40,7 @@ public class HistorialController extends HttpServlet {
         String action = request.getParameter("action");
         JsonObject jsonResponse = new JsonObject();
 
-        // Protección contra action == null
+      
         if (action == null) {
             action = "";
         }
@@ -49,9 +49,7 @@ public class HistorialController extends HttpServlet {
 
             switch (action) {
 
-                // ── REGISTRAR ATENCIÓN — RF-08, RN-03 ──────────────────
-                // El odontólogo marca la cita como realizada y registra
-                // la atención en el historial clínico del paciente
+                
                 case "registrar":
                     int idCita = Integer.parseInt(request.getParameter("idCita"));
                     int idProfesional = Integer.parseInt(
@@ -60,7 +58,7 @@ public class HistorialController extends HttpServlet {
                     String tratamiento = request.getParameter("tratamiento");
                     String observaciones = request.getParameter("observaciones");
 
-                    // RN-03: Primero registrar en historial
+                 
                     Historial h = new Historial();
                     h.setIdCita(idCita);
                     h.setIdProfesionalAtendio(idProfesional);
@@ -72,7 +70,7 @@ public class HistorialController extends HttpServlet {
 
                     boolean registrado = historialDao.registrarAtencion(h);
 
-                    // RN-03: Solo marcar como ATENDIDA si el historial se guardó
+                  
                     if (registrado) {
                         citaDao.marcarComoAtendida(idCita);
                         jsonResponse.addProperty("success", true);
@@ -85,7 +83,7 @@ public class HistorialController extends HttpServlet {
                     }
                     break;
 
-                // ── LISTAR POR CITA ─────────────────────────────────────
+            
                 case "listarPorCita":
                     int idC = Integer.parseInt(request.getParameter("idCita"));
                     jsonResponse.add("data",
@@ -93,7 +91,6 @@ public class HistorialController extends HttpServlet {
                     jsonResponse.addProperty("success", true);
                     break;
 
-                // ── LISTAR POR PROFESIONAL ──────────────────────────────
                 case "listarPorProfesional":
                     int idP = Integer.parseInt(request.getParameter("idProfesional"));
                     jsonResponse.add("data",

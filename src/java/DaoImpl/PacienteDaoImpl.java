@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class PacienteDaoImpl implements IPaciente {
 
-   // ── SHA-256 (igual que UsuarioDaoImpl) ───────────────────
+ 
     private String hashClave(String clave) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -33,7 +33,7 @@ public class PacienteDaoImpl implements IPaciente {
         }
     }
 
-    // ── REGISTRAR PACIENTE → tabla PACIENTES Oracle ──────────
+    
     @Override
     public int registrarPaciente(Paciente paciente) {
         String sql = "INSERT INTO PACIENTES(ID, NOMBRE, APELLIDO, DNI, EMAIL, "
@@ -78,7 +78,7 @@ public class PacienteDaoImpl implements IPaciente {
 return 0;
     }
 
-    // ── LISTAR PACIENTES ACTIVOS ─────────────────────────────
+    
     @Override
     public List<Paciente> listarPacientes() {
         List<Paciente> lista = new ArrayList<>();
@@ -102,7 +102,7 @@ return 0;
         return lista;
     }
 
-    // ── EDITAR PACIENTE ──────────────────────────────────────
+  
     @Override
     public boolean editar(Paciente paciente) {
         String sql = "UPDATE PACIENTES SET NOMBRE=?, APELLIDO=?, DNI=?, "
@@ -127,7 +127,7 @@ return 0;
         return false;
     }
 
-    // ── BAJA LÓGICA ──────────────────────────────────────────
+
     @Override
     public boolean delete(int id) {
         String sql = "UPDATE PACIENTES SET ACTIVO = 'N' WHERE ID = ?";
@@ -145,7 +145,7 @@ return 0;
         return false;
     }
 
-    // ── BUSCAR POR DNI ───────────────────────────────────────
+   
     @Override
     public Paciente buscarPacientePorDni(String dni) {
         String sql = "SELECT ID, NOMBRE, APELLIDO, DNI, EMAIL, TELEFONO, "
@@ -165,7 +165,7 @@ return 0;
         return null;
     }
 
-    // ── BUSCAR POR ID ────────────────────────────────────────
+
     @Override
     public Paciente buscarPorId(int id) {
         String sql = "SELECT ID, NOMBRE, APELLIDO, DNI, EMAIL, TELEFONO, "
@@ -185,7 +185,7 @@ return 0;
         return null;
     }
 
-    // ── BUSCAR POR EMAIL (para validar duplicados en registro) 
+  
     public Paciente buscarPorEmail(String email) {
         String sql = "SELECT ID, NOMBRE, APELLIDO, DNI, EMAIL, TELEFONO, "
                    + "VERIFICADO, ACTIVO FROM PACIENTES WHERE EMAIL = ?";
@@ -204,7 +204,7 @@ return 0;
         return null;
     }
 
-    // ── MAPEAR ResultSet → Paciente ──────────────────────────
+ 
     private Paciente mapear(ResultSet rs) throws SQLException {
         Paciente p = new Paciente();
         p.setId(rs.getInt("ID"));

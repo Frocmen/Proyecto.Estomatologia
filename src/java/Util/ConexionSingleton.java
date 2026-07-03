@@ -10,7 +10,7 @@ public class ConexionSingleton {
  // VARIABLE ESTÁTICA DE CONEXIÓN
     public static Connection connection;
  
-    // BANDERA: evita registrar el ShutdownHook más de una vez
+   
     private static boolean hookRegistered = false;
  
     // MÉTODO getConnection
@@ -18,10 +18,10 @@ public class ConexionSingleton {
         try {
             if (connection == null || connection.isClosed()) {
  
-                // Driver Oracle JDBC
+           
                 Class.forName("oracle.jdbc.OracleDriver");
  
-                // Conexión Oracle XE
+         
                 connection = DriverManager.getConnection(
                         "jdbc:oracle:thin:@localhost:1521/XE",
                         "BDPI",
@@ -29,7 +29,7 @@ public class ConexionSingleton {
                 );
                 System.out.println("Conectado a Oracle XE");
  
-                //  Registrar el ShutdownHook UNA SOLA VEZ
+               
                 if (!hookRegistered) {
                     hookRegistered = true;
                     Runtime.getRuntime().addShutdownHook(new getClose());
@@ -47,7 +47,7 @@ public class ConexionSingleton {
         @Override
         public void run() {
             try {
-                //  Cerrar directamente la variable, sin llamar getConnection()
+              
                 if (connection != null && !connection.isClosed()) {
                     connection.close();
                     System.out.println("Conexión cerrada correctamente.");

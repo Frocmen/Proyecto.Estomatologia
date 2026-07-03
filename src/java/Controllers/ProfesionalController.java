@@ -45,14 +45,14 @@ private final Gson gson = Util.GsonProvider.getGson();
 
             switch (action) {
 
-                // ── LISTAR PROFESIONALES ────────────────────────────────
+                
                 case "listar":
                     jsonResponse.add("data",
                             gson.toJsonTree(profesionalDao.listarProfesionales()));
                     jsonResponse.addProperty("success", true);
                     break;
 
-                // ── GUARDAR PROFESIONAL ─────────────────────────────────
+               
                 case "guardar":
                     Profesional p = new Profesional();
                     p.setNombre(request.getParameter("nombre"));
@@ -67,7 +67,7 @@ private final Gson gson = Util.GsonProvider.getGson();
                             : "Error al registrar");
                     break;
 
-                // ── BUSCAR POR ESPECIALIDAD ─────────────────────────────
+              
                 case "buscarPorEspecialidad":
                     String especialidad = request.getParameter("especialidad");
                     jsonResponse.add("data",
@@ -75,7 +75,7 @@ private final Gson gson = Util.GsonProvider.getGson();
                     jsonResponse.addProperty("success", true);
                     break;
 
-                // ── BUSCAR POR ID ───────────────────────────────────────
+                
                 case "buscar":
                     int idBuscar = Integer.parseInt(request.getParameter("id"));
                     Profesional prof = profesionalDao.buscarPorId(idBuscar);

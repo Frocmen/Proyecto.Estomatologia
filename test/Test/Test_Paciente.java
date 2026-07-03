@@ -19,7 +19,7 @@ public class Test_Paciente {
     public static void main(String[] args) {
         Test_Paciente tp = new Test_Paciente();
 
-        // Descomentar el método a probar
+
         // tp.registrar();
         tp.listar();
         // tp.buscarPorDni();
@@ -28,7 +28,7 @@ public class Test_Paciente {
         // tp.eliminar();
     }
 
-    // REGISTRAR PACIENTE
+
     public void registrar() {
         Paciente p = new Paciente();
         p.setNombre("Ana");
@@ -45,7 +45,7 @@ public class Test_Paciente {
         }
     }
 
-    // LISTAR PACIENTES 
+
     public void listar() {
         List<Paciente> lista = dao.listarPacientes();
         if (lista != null && !lista.isEmpty()) {
@@ -63,7 +63,7 @@ public class Test_Paciente {
         }
     }
 
-    //  BUSCAR POR DNI 
+
     public void buscarPorDni() {
         Paciente p = dao.buscarPacientePorDni("12345678");
         if (p != null) {
@@ -78,7 +78,7 @@ public class Test_Paciente {
         }
     }
 
-    // BUSCAR POR ID 
+
     public void buscarPorId() {
         Paciente p = dao.buscarPorId(1);
         if (p != null) {
@@ -92,7 +92,7 @@ public class Test_Paciente {
         }
     }
 
-    // EDITAR PACIENTE 
+
     public void editar() {
         Paciente p = new Paciente();
         p.setId(1);
@@ -110,7 +110,7 @@ public class Test_Paciente {
         }
     }
 
-    // ELIMINAR PACIENTE 
+
     public void eliminar() {
         boolean result = dao.delete(1);
         if (result) {

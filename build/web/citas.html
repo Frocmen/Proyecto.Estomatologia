@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html lang="es">
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +9,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     <link rel="stylesheet" href="assets/css/styleq.css">
 </head>
 <body>
-
     <header id="main-header">
         <h1>La Clínica "Dental Health"</h1>
         <nav>
@@ -30,36 +24,36 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <h2>Agendar Cita</h2>
             <form id="formCita">
                 <div class="campo">
-                    <label>Nombre completo:</label>
+                    <label for="nombre">Nombre completo:</label>
                     <input type="text" id="nombre" placeholder="Ej: Jhonatan López" required>
                 </div>
                 <div class="campo">
-                    <label>Teléfono:</label>
+                    <label for="telefono">Teléfono:</label>
                     <input type="tel" id="telefono" placeholder="987 654 321" required>
                 </div>
                 <div class="campo">
-                    <label>Correo electrónico:</label>
+                    <label for="email">Correo electrónico:</label>
                     <input type="email" id="email" placeholder="ejemplo@correo.com" required>
                 </div>
                 <div class="campo">
-                    <label>Servicio deseado:</label>
+                    <label for="servicio">Servicio deseado:</label>
                     <select id="servicio" required>
                         <option value="">Seleccione un servicio...</option>
-                        <option value="1">Limpieza Dental Profunda</option>
-                        <option value="2">Blanqueamiento Dental</option>
-                        <option value="3">Consulta General</option>
-                        <option value="4">Empaste por Caries</option>
-                        <option value="5">Extracción Dental</option>
-                        <option value="6">Evaluación de Ortodoncia</option>
-                        <option value="7">Revisión y Diagnóstico</option>
+                        <option value="Limpieza Dental Profunda">Limpieza Dental Profunda</option>
+                        <option value="Blanqueamiento Dental">Blanqueamiento Dental</option>
+                        <option value="Consulta General">Consulta General</option>
+                        <option value="Empaste por Caries">Empaste por Caries</option>
+                        <option value="Extracción Dental">Extracción Dental</option>
+                        <option value="Evaluación de Ortodoncia">Evaluación de Ortodoncia</option>
+                        <option value="Revisión y Diagnóstico">Revisión y Diagnóstico</option>
                     </select>
                 </div>
                 <div class="campo">
-                    <label>Fecha deseada:</label>
+                    <label for="fecha">Fecha deseada:</label>
                     <input type="date" id="fecha" required>
                 </div>
                 <div class="campo">
-                    <label>Hora aproximada:</label>
+                    <label for="hora">Hora aproximada:</label>
                     <select id="hora" required>
                         <option value="">Seleccione hora...</option>
                         <option value="08:00">08:00 AM</option>
@@ -72,7 +66,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                     </select>
                 </div>
                 <div class="campo">
-                    <label>Comentarios adicionales:<br>Describe tu malestar:</label>
+                    <label for="comentarios">Comentarios adicionales:<br>Describe tu malestar:</label>
                     <textarea id="comentarios" rows="4" placeholder="Ej: Tengo dolor fuerte, es mi primera vez en la clínica..."></textarea>
                 </div>
                 <button type="submit" class="btn-accion">Solicitar Cita</button>
@@ -82,7 +76,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     </main>
 
     <footer>
-        <p>&copy; 2026 Clínica odontología - @DH</p>
+        <p>&copy; 2026 Clínica Odontología - @DH</p>
         <p>Todos los derechos reservados al autor</p>
         <div class="social-links">
             <p>Síguenos en:</p>
@@ -112,6 +106,5 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/citas.js"></script>
-
 </body>
 </html>

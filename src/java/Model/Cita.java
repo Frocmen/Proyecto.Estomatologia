@@ -15,7 +15,7 @@ public class Cita {
     private Paciente paciente;
     private Profesional profesional;
     private LocalDateTime fechaHora;
-    private String estado;           // CONFIRMADA, ATENDIDA, CANCELADA, REPROGRAMADA, NO_SHOW
+    private String estado;          
     private String motivo;
     private int especialidadId;
     
@@ -86,7 +86,7 @@ public class Cita {
     this.especialidadId = especialidadId;
     }
     
-    // Regla de Negocio RN-05: Solo se puede cancelar con más de 8 horas
+
     public boolean puedeCancelar() {
         if (fechaHora == null) return false;
         long horasRestantes = java.time.Duration.between(LocalDateTime.now(), fechaHora).toHours();

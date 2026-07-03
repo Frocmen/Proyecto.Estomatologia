@@ -12,9 +12,9 @@ import java.security.NoSuchAlgorithmException;
 public class Usuario {
     private int id_usuario;
     private String usuario;
-    private String clave;           // Contraseña hasheada
+    private String clave;           
     private Rol rol;
-    private Persona persona;        // Puede ser Paciente o Profesional
+    private Persona persona;        
 
     public Usuario() {
     }

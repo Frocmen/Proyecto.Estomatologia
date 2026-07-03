@@ -2,14 +2,8 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
 */
-/* ══════════════════════════════════════════════════════════
-   VistaRecepcion.css
-   Complementa a style.css — NO redefine .card, .campo ni
-   .btn-accion (ya existen ahí). Solo agrega lo que falta:
-   layout de sidebar, tarjetas de cita y botones secundarios.
-   ══════════════════════════════════════════════════════════ */
 
-/* ── LAYOUT GENERAL (sidebar + contenido) ─────────────────── */
+
 
 .container-fluid {
     width: 100%;

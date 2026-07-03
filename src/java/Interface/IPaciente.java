@@ -18,5 +18,5 @@ public interface IPaciente {
     boolean delete(int id);
     Paciente buscarPacientePorDni(String dni);
     Paciente buscarPorId(int id);
-    Paciente buscarPorEmail(String email); // ← NUEVO
+    Paciente buscarPorEmail(String email); 
 }

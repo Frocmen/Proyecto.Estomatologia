@@ -16,7 +16,7 @@ public class Especialidad {
     
     private int id;
     private String nombre;
-    private int duracionMinutos;     // ← RN-D05
+    private int duracionMinutos;     
     private boolean activo;
 
     public Especialidad() {}

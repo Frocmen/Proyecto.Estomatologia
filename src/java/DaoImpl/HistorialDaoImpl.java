@@ -110,7 +110,7 @@ private Connection  cn;
                 h.setId(rs.getInt("ID"));
                 h.setIdCita(rs.getInt("CITA_ID"));
 
-                // ORACLE: Timestamp → LocalDateTime
+               
                 Timestamp tsInicio = rs.getTimestamp("FECHA_HORA_INICIO_REAL");
                 if (tsInicio != null) {
                     h.setFechaHoraInicioReal(tsInicio.toLocalDateTime());

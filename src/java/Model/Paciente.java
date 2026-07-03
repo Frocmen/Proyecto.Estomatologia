@@ -37,7 +37,7 @@ public class Paciente{
         this.fechaRegistro = LocalDateTime.now();
     }
 
-    // ← AGREGADO: alias getId_persona() para compatibilidad con DAOs
+   
 
     public int getId() {
         return id;

@@ -21,14 +21,13 @@ public class Test_Historial {
     public static void main(String[] args) {
         Test_Historial th = new Test_Historial();
 
-        // Descomentar el método a probar
+       
         // th.registrarAtencion();
         th.listarPorCita();
         // th.listarPorProfesional();
     }
 
-    // REGISTRAR ATENCIÓN EN HISTORIAL 
-    // RF-08, RN-03: Se registra cuando odontólogo marca "Realizada"
+   
     public void registrarAtencion() {
         Historial h = new Historial();
         h.setIdCita(1);
@@ -53,7 +52,7 @@ public class Test_Historial {
         }
     }
 
-    // LISTAR HISTORIAL POR CITA 
+  
     public void listarPorCita() {
         List<Historial> lista = dao.listarPorCita(1);
         if (lista != null && !lista.isEmpty()) {
@@ -74,7 +73,7 @@ public class Test_Historial {
         }
     }
 
-    // LISTAR HISTORIAL POR PROFESIONAL
+  
     public void listarPorProfesional() {
         List<Historial> lista = dao.listarPorProfesional(1);
         if (lista != null && !lista.isEmpty()) {
